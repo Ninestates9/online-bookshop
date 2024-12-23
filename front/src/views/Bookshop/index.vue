@@ -6,10 +6,11 @@
                 <strong>{{store.username}}</strong>
             </div>
             <div class="leftlist">
-                <button id="BookBrowser" class="leftbtn" @click="navigateTo('BookBrowser')">首页</button>
-                <button id="CustomerInfo" class="leftbtn" @click="navigateTo('CustomerInfo')">用户信息</button>
-                <button id="Cart" class="leftbtn" @click="navigateTo('Cart')">购物车</button>
-                <button id="History" class="leftbtn" @click="navigateTo('History')">历史订单</button>
+                <button id="Storage" class="leftbtn" @click="navigateTo('Storage')">库存</button>
+                <button id="Order" class="leftbtn" @click="navigateTo('Order')">订单</button>
+                <button id="Usermessage" class="leftbtn" @click="navigateTo('Usermessage')">消息</button>
+                <button id="UserInfo" class="leftbtn" @click="navigateTo('UserInfo')">修改用户信息</button>
+                <button id="MissingRecord" class="leftbtn" @click="navigateTo('MissingRecord')">缺书记录</button>
                 <button id="logout" class="leftbtn" @click="logout">注销</button>
             </div>
         </div>
@@ -21,7 +22,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import misakaImg from '../../assets/images/Misaka Mikoto.jpg';
+import misakaImg from '../../assets/images/vex.jpg';
 import { mainStore } from '../../store/index.ts';
 import { useRouter } from 'vue-router';
 const store = mainStore();

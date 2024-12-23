@@ -26,25 +26,64 @@ const routes = [
     path: '/Customer',
     name: 'customer',
     component: () => import('../views/Customer/index.vue'),
-    redirect: '/BookBrowser',
+    redirect: '/Customer/BookBrowser',
     children: [
       {
-        path: '/BookBrowser',
+        path: '/Customer/BookBrowser',
         name: 'BookBrowser',
         component: () => import('../views/Customer/BookBrowser/index.vue')
       },
       {
-        path: '/CustomerInfo',
+        path: '/Customer/CustomerInfo',
         name: 'CustomerInfo',
         component: () => import('../views/Customer/CustomerInfo/index.vue')
       },
       {
-        path: '/History',
+        path: '/Customer/History',
         name: 'History',
         component: () => import('../views/Customer/History/index.vue')
+      },
+      {
+        path: '/Customer/Cart',
+        name: 'Cart',
+        component: () => import('../views/Customer/Cart/index.vue')
       }
     ]
 
+  },
+  {
+    path: '/Bookshop',
+    name: 'Bookshop',
+    component: () => import('../views/Bookshop/index.vue'),
+    redirect: '/Bookshop/Storage',
+    children: [
+      {
+        path: '/Bookshop/Storage',
+        name: 'Storage',
+        component: () => import('../views/Bookshop/Storage/index.vue')
+      },
+      {
+        path: '/Bookshop/Order',
+        name: 'Order',
+        component: () => import('../views/Bookshop/Order/index.vue')
+      },
+      {
+        path: '/Bookshop/Usermessage',
+        name: 'Usermessage',
+        component: () => import('../views/Bookshop/Usermessage/index.vue')
+      },
+      {
+        path: '/Bookshop/UserInfo',
+        name: 'UserInfo',
+        component: () => import('../views/Bookshop/UserInfo/index.vue')
+      },
+      {
+        path: '/Bookshop/MissingRecord',
+        name: 'MissingRecord',
+        component: () => import('../views/Bookshop/MissingRecord/index.vue')
+      }
+      
+    ]
   }
 ] as RouteRecordRaw[]
 const router = createRouter({
