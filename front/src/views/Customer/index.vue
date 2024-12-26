@@ -10,11 +10,26 @@
                 <button id="CustomerInfo" class="leftbtn" @click="navigateTo('CustomerInfo')">用户信息</button>
                 <button id="Cart" class="leftbtn" @click="navigateTo('Cart')">购物车</button>
                 <button id="History" class="leftbtn" @click="navigateTo('History')">历史订单</button>
+                <button id="Message" class="leftbtn" @click="showDialog()">留言</button>
                 <button id="logout" class="leftbtn" @click="logout">注销</button>
             </div>
         </div>
         <div class="rightmain">
             <router-view></router-view>
+            <el-dialog title="留言" :model-value="dialogVisible" @close="resetMessage">
+    <div>
+      <el-input
+        type="textarea"
+        v-model="message"
+        placeholder="请输入您的留言"
+        rows="4"
+      ></el-input>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="sendMessage()">确 定</el-button>
+    </span>
+  </el-dialog>
         </div>
     </div>
 </template>
@@ -24,9 +39,10 @@ import { ref } from 'vue';
 import misakaImg from '../../assets/images/Misaka Mikoto.jpg';
 import { mainStore } from '../../store/index.ts';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 const store = mainStore();
 const router = useRouter();
-
+const message = ref(store.usermessage);
 function navigateTo(componentName) {
     // 路由导航
     router.push({ name: componentName });
@@ -48,6 +64,35 @@ function navigateTo(componentName) {
     //         button.style.color = ''; // 重置为默认文本颜色
     //     }
     // });
+}
+const showDialog = () => {
+    console.log('添加书目按钮被点击');
+    dialogVisible.value = true;
+};
+
+const dialogVisible = ref(false);
+
+const sendMessage = () => {
+    let formData = new FormData();
+            formData.append('Uno', store.userid);
+            formData.append('message', store.usermessage);
+            axios({
+                method: 'post',
+                url: `${store.ip}/api/sendMsg`,
+                data: formData,
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }
+            )
+                .then(response => {
+                    let responseData = response.data;
+                    if (responseData.ret === 1) {
+                        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+                    }
+                    else{
+                        getuserinfo();
+                    }
+                });
+                dialogVisible.value = false;
 }
 </script>
 

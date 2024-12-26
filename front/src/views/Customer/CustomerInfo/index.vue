@@ -26,13 +26,19 @@
             <p>
                 <strong>余额:</strong> {{ store.balance }}
             </p>
+            <p>
+                <strong>信用等级:</strong> {{ store.userlevel }}
+            </p>
+            <button id="recharge" @click="recharge()">充值</button>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onBeforeUnmount, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
+import axios from 'axios';
+import { ElMessage } from 'element-plus';
 
 const store = mainStore();
 const isEditing = ref({ username: false, address: false });
@@ -45,15 +51,88 @@ const toggleEdit = (field: 'username' | 'address') => {
         if (!isEditing.value.username) {
             // 这里可以调用接口保存修改后的用户名
             store.username = newUsername.value;
+
         }
     } else if (field === 'address') {
         isEditing.value.address = !isEditing.value.address;
         if (!isEditing.value.address) {
             // 这里可以调用接口保存修改后的地址
             store.address = newAddress.value;
+
         }
     }
+    let formData = new FormData();
+            formData.append('Uno', store.userid);
+            formData.append('password', store.password);
+            formData.append('Uname', store.username);
+            formData.append('address', store.address);
+
+            axios({
+                method: 'post',
+                url: `${store.ip}/api/updateInfo`,
+                data: formData,
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }
+            )
+                .then(response => {
+                    let responseData = response.data;
+                    if (responseData.ret === 1) {
+                        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+                    }
+                })
 };
+
+onBeforeUnmount(()=>{
+    getuserinfo();
+});
+
+
+const recharge = () => {
+    let formData = new FormData();
+            formData.append('Uno', store.userid);
+            formData.append('money', 100);
+            axios({
+                method: 'post',
+                url: `${store.ip}/api/pre_pay`,
+                data: formData,
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }
+            )
+                .then(response => {
+                    let responseData = response.data;
+                    if (responseData.ret === 1) {
+                        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+                    }
+                    else{
+                        getuserinfo();
+                    }
+                })
+}
+
+
+const getuserinfo = () => {
+    let formdata = new FormData();
+    formdata.append('Uno', store.userid)
+    axios({
+        method: 'post',
+        url: `${store.ip}/api/getInfo`,
+        data: formdata,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }
+    )
+        .then(response => {
+            let responseData = response.data;
+            store.userid = responseData.info.Uno;
+            store.username = responseData.info.Uno;
+            store.userlevel = responseData.info.level;
+            store.address = responseData.info.address;
+            store.balance = responseData.info.balance;
+        })
+        .catch(error => {
+            console.error('Error posting data:', error);
+            ElMessage({ message: '网络错误，请稍后重试！', type: 'error', duration: 5 * 1000, grouping: true });
+        });
+}
 </script>
 
 <style>
@@ -87,7 +166,8 @@ const toggleEdit = (field: 'username' | 'address') => {
 .userinfo {
     padding: 20px;
     font-size: 18px;
-    text-align: left; /* 确保文本左对齐 */
+    text-align: left;
+    /* 确保文本左对齐 */
 }
 
 .userinfo p {

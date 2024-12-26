@@ -1,110 +1,157 @@
 <template>
-        <div class="rightmain">
-            <div class="righttop">
-                <div class="searchbox">
-                    <input type="text" class="search-input" />
-                    <button class="searchbtn">搜索</button>
-                </div>
-                <!-- <div class="righttool">
-                    <svg t="1734526169153" class="icon" viewBox="0 0 1160 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="4240" width="200" height="200">
-                        <path
-                            d="M415.1296 857.429333a83.285333 83.285333 0 1 1 0 166.570667 83.285333 83.285333 0 0 1 0-166.570667z m499.643733 0a83.285333 83.285333 0 1 1 0 166.570667 83.285333 83.285333 0 0 1 0-166.570667zM213.435733 0v0.4096l5.12-0.034133a34.133333 34.133333 0 0 1 34.2016 29.2864l20.48 143.803733h834.013867a34.133333 34.133333 0 0 1 33.6896 39.697067l-83.524267 506.88a68.266667 68.266667 0 0 1-67.345066 57.1392H318.327467c-1.774933 0-3.515733-0.136533-5.2224-0.375467h-6.144a34.133333 34.133333 0 0 1-34.2016-29.2864L197.188267 218.043733l-7.338667-44.578133h0.989867l-12.868267-90.2144H20.48V0h192.955733z m330.308267 340.138667H481.28v270.404266h62.464V340.138667z m312.285867 0h-62.464v270.404266h62.464V340.138667z"
-                            fill="#515151" p-id="4241"></path>
-                    </svg>
-                </div> -->
-            </div>
-            <div class="bookbrowser"></div>
+    <div class="rightmain">
+      <div class="righttop">
+        <div class="searchbox">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="请输入搜索内容"
+          />
+          <button class="searchbtn" @click="performSearch">搜索</button>
         </div>
-
-</template>
-
-<script lang="ts" setup>
-import { ref } from 'vue';
-import { mainStore } from '../../../store/index.ts';
-
-// 初始化 Pinia store
-const store = mainStore();
-</script>
-
-<style>
-
-
-.rightmain {
+        <div class="search-options">
+          <label v-for="option in searchOptions" :key="option.value">
+            <input
+              type="radio"
+              name="searchOption"
+              :value="option.value"
+              v-model="selectedOption"
+              @change="updateSearchOption"
+            />
+            {{ option.label }}
+          </label>
+        </div>
+      </div>
+      <div class="bookbrowser">
+        <el-row :gutter="20">
+          <el-col v-for="book in books" :key="book.id" :span="6">
+            <el-card class="book-card">
+              <img :src="book.cover" alt="书本封面" class="book-cover" />
+              <div class="book-info">
+                <h3>{{ book.title }}</h3>
+                <p>作者: {{ book.author }}</p>
+                <p>价格: ¥{{ book.price }}</p>
+              </div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </div>
+    </div>
+  </template>
+  
+  <script lang="ts" setup>
+  import { ref } from 'vue';
+  import { mainStore } from '../../../store/index.ts';
+  import { ElCard, ElRow, ElCol } from 'element-plus';
+  
+  // 初始化 Pinia store
+  const store = mainStore();
+  
+  const searchOptions = [
+    { value: 'Bno', label: '书号' },
+    { value: 'Bname', label: '书名' },
+    { value: 'press', label: '出版社' },
+    { value: 'key', label: '关键字' },
+    { value: 'author1', label: '第一作者' },
+    { value: 'author2', label: '第二作者' },
+    { value: 'author3', label: '第三作者' },
+    { value: 'author4', label: '第四作者' }
+  ];
+  
+  const selectedOption = ref('bookId'); // 默认选中的值
+  
+  // 更新选中的搜索选项
+  const updateSearchOption = () => {
+    store.searchOP = selectedOption.value; // 保存到 store
+    // alert(store.searchOP);
+  };
+  
+  // 书籍数据
+  const books = ref([
+    { id: 1, title: '书名1', author: '作者1', price: 50, cover: '封面链接1' },
+    { id: 2, title: '书名2', author: '作者2', price: 60, cover: '封面链接2' },
+    { id: 3, title: '书名3', author: '作者3', price: 70, cover: '封面链接3' },
+    // 更多书籍
+  ]);
+  
+  // 搜索功能
+  const performSearch = () => {
+    console.log('搜索内容:', selectedOption.value);
+    // 在这里添加搜索逻辑
+  };
+  </script>
+  
+  <style>
+  .rightmain {
     position: relative;
-    display: flex;
+    display: grid;
     height: 98.5vh;
     width: 100%;
-    overflow: hidden;
-    display: grid;
     grid-template-rows: 15% 85%;
-}
-
-.righttop {
+  }
+  
+  .righttop {
     position: relative;
     overflow: hidden;
     background-color: rgba(91, 247, 1, 0.421);
     width: 100%;
     height: 100%;
-}
-
-.searchbox {
+  }
+  
+  .searchbox {
     position: relative;
     display: flex;
     align-items: center;
     background-color: rgba(91, 247, 1, 0.421);
     width: 100%;
-    height: 100%;
+    height: 50%;
     padding: 10px;
     overflow: hidden;
-    /* 添加内边距 */
-}
-
-.search-input {
+  }
+  
+  .search-input {
     width: 80%;
-    /* 设置宽度为100% */
     padding: 10px;
-    /* 添加内边距 */
     margin-left: 3%;
     border: 1px solid #ccc;
-    /* 边框样式 */
     border-radius: 4px;
-    /* 圆角 */
-}
-
-.searchbtn {
+  }
+  
+  .searchbtn {
     background-color: rgba(163, 43, 218, 0.5);
     color: white;
     border: 1.5px solid rgba(176, 185, 15, 0.5);
     max-height: 100%;
     margin-right: 5px;
-}
-
-.righttool {
-    position: relative;
-    justify-items: center;
-    align-items: center;
+  }
+  
+  .search-options {
     display: flex;
-    background-color: rgba(255, 255, 255, 0);
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-}
-
-.righttool svg {
-    position: relative;
-    margin-left: 30%;
-    max-width: 40%;
-    max-height: 40%;
-    cursor: pointer;
-}
-
-.bookbrowser {
+    flex-wrap: wrap; /* 允许换行 */
+    margin-top: 10px; /* 添加顶部边距 */
+  }
+  
+  .search-options label {
+    margin-right: 10px; /* 添加右侧间距 */
+    color: #333; /* 可根据需要调整颜色 */
+  }
+  
+  .bookbrowser {
     position: relative;
     display: flex;
     align-items: center;
     background-color: rgba(233, 58, 5, 0.421);
     width: 100%;
     height: 100%;
-}
-</style>
+    padding: 10px;
+  }
+  
+  .book-card {
+    max-width: 100%;
+  }
+  
+  .book-cover {
+    width: 100%;
+    height: auto;
+  }
+  </style>

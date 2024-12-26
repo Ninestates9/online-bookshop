@@ -10,7 +10,8 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../views/HomePage/index.vue')
+    component: () => import('../views/HomePage/index.vue'),
+    redirect: '/SignIn'
   },
   {
     path: '/SignIn',
