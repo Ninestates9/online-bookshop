@@ -49,6 +49,31 @@
       }
     })
   }
+
+  const deleteUserMessage = (Uno) => {
+    let formData = new FormData();
+    FormData.append('Uno', Uno );
+    axios({
+    method: 'post',
+    url: `${store.ip}/api/getMsg`,
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+    .then((response) => {
+      const responseData = response.data;
+      if (responseData.ret === 1) {
+        ElMessage({
+          message: responseData.msg,
+          type: 'error',
+          duration: 5 * 1000,
+          grouping: true,
+        });
+      } else {
+        getUserMessage();
+      }
+    })
+  }
+
   onMounted(() => {
     getUserMessage(); // 组件挂载时获取用户信息
 });

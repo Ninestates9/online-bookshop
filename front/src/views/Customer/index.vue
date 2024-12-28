@@ -112,7 +112,7 @@ const dialogVisible = ref(false);
 const sendMessage = () => {
     let formData = new FormData();
             formData.append('Uno', store.userid);
-            formData.append('message', store.usermessage);
+            formData.append('message', message);
             axios({
                 method: 'post',
                 url: `${store.ip}/api/sendMsg`,
@@ -132,6 +132,25 @@ const sendMessage = () => {
                 dialogVisible.value = false;
 }
 
+
+  const getuserinfo = () => {
+    let uno = new FormData();
+            uno.append('Uno',store.userid)
+            axios({
+                method: 'post',
+                url: `${store.ip}/api/getInfo`,
+                data: uno,
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }
+            )
+                .then(response => {
+                   let responseData1 = response.data;
+                   store.username = responseData1.info.Uname;
+                   store.userlevel = responseData1.info.level;
+                   store.address = responseData1.info.address;
+                   store.balance = responseData1.info.balance;
+                })
+  }
   // 获取购物车数据
   const getCartBook = () => {
       let formData = new FormData();
