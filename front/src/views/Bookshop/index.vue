@@ -11,7 +11,8 @@
                 <button id="Usermessage" class="leftbtn" @click="navigateTo('Usermessage')">消息</button>
                 <button id="UserInfo" class="leftbtn" @click="navigateTo('UserInfo')">修改用户信息</button>
                 <button id="MissingRecord" class="leftbtn" @click="navigateTo('MissingRecord')">缺书记录</button>
-                <button id="logout" class="leftbtn" @click="logout">注销</button>
+                <button id="MissingRecord" class="leftbtn" @click="navigateTo('Purchase')">采购单</button>
+                <button id="logout" class="leftbtn" @click="logout()">注销</button>
             </div>
         </div>
         <div class="rightmain">
@@ -49,6 +50,9 @@ function navigateTo(componentName) {
     //         button.style.color = ''; // 重置为默认文本颜色
     //     }
     // });
+}
+const logout = () => {
+    router.push({path:'/SignIn'})
 }
 </script>
 

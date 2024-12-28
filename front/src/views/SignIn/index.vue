@@ -61,15 +61,15 @@ const signIn = () =>{
             )
                 .then(response => {
                    let responseData1 = response.data;
-                   store.userid = responseData1.info.Uno;
-                   store.username = responseData1.info.Uno;
+                   store.setUserId(responseData1.info.Uno);
+                   store.username = responseData1.info.Uname;
                    store.userlevel = responseData1.info.level;
                    store.address = responseData1.info.address;
                    store.balance = responseData1.info.balance;
                 })
         let responseData = response.data;
         if (responseData.ret === 0) {
-            store.userid=username.value;
+            store.setUserId(username.value);
             localStorage.setItem('username', username.value);
             if(responseData.type == 'U'){
             router.push({path:'/Customer'})
@@ -99,7 +99,9 @@ const signIn = () =>{
         height: 100%;
         object-fit: cover;
         object-position: center;
-        position: fixed;
+        position: absolute;
+        left: 0%;
+        top: 0%;
         z-index: -1;
     }
     .signin-wrapper {

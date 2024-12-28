@@ -11,7 +11,7 @@
                 <button id="Cart" class="leftbtn" @click="navigateTo('Cart')">购物车</button>
                 <button id="History" class="leftbtn" @click="navigateTo('History')">历史订单</button>
                 <button id="Message" class="leftbtn" @click="showDialog()">留言</button>
-                <button id="logout" class="leftbtn" @click="logout">注销</button>
+                <button id="logout" class="leftbtn" @click="logout()">注销</button>
             </div>
         </div>
         <div class="rightmain">
@@ -35,11 +35,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import misakaImg from '../../assets/images/Misaka Mikoto.jpg';
 import { mainStore } from '../../store/index.ts';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import { ElMessage } from 'element-plus';
 const store = mainStore();
 const router = useRouter();
 const message = ref(store.usermessage);
@@ -69,6 +70,42 @@ const showDialog = () => {
     console.log('添加书目按钮被点击');
     dialogVisible.value = true;
 };
+const logout = () => {
+  // 确保 cartItems 是有效且非空的
+  if (store.cartItems.value && Array.isArray(store.cartItems.value)) {
+    const cartData = store.cartItems.map(item => [
+      item.Bno,          // 书号
+      item.Bsubno,       // 丛书号
+      item.orderNumber   // 数量
+    ]);
+
+    // 构建提交的数据
+    let formData = new FormData();
+    formData.append('Uno', store.userid); // 用户ID
+    formData.append('books', JSON.stringify(cartData)); // 将二维数组转为JSON字符串传给后端
+
+    // 提交购物车数据给后端
+    axios({
+      method: 'post',
+      data: formData,
+      url: `${store.ip}/api/submitShoppingCart`,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    .then(response => {
+      let responseData = response.data;
+      if (responseData.ret === 1) {
+        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+      } else {
+        router.push({path:'/SignIn'})
+      }
+    })
+    .catch(error => {
+      ElMessage.error('提交购物车时出错');
+    });
+  } else {
+    router.push({path:'/SignIn'})
+  }
+};
 
 const dialogVisible = ref(false);
 
@@ -94,6 +131,39 @@ const sendMessage = () => {
                 });
                 dialogVisible.value = false;
 }
+
+  // 获取购物车数据
+  const getCartBook = () => {
+      let formData = new FormData();
+      formData.append('Uno', store.userid);
+      axios({
+          method: 'post',
+          data: formData,
+          url: `${store.ip}/api/getShoppingCart`,
+          headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      .then(response => {
+          let responseData = response.data;
+          if (responseData.ret === 1) {
+              ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+          } else {
+              // 确保数据结构正确
+              store.cartItems.value = responseData.books.map(book => ({
+                  ...book,
+                  authors: Array.isArray(book.authors) ? book.authors : [book.authors],
+                  orderNumber: book.orderNumber || 1,
+                  total: book.total || book.price * (book.orderNumber || 1)
+              }));
+          }
+      });
+  };
+
+  onMounted(() => {
+    if (!store.cartItems || store.cartItems.length === 0) {
+      store.cartItems = []; // 确保是数组
+    }
+    getCartBook();
+  });
 </script>
 
 <style>

@@ -82,7 +82,12 @@ const routes = [
         path: '/Bookshop/MissingRecord',
         name: 'MissingRecord',
         component: () => import('../views/Bookshop/MissingRecord/index.vue')
-      }
+      },
+      {
+        path: '/Bookshop/Purchase',
+        name: 'Purchase',
+        component: () => import('../views/Bookshop/Purchase/index.vue')
+      },
       
     ]
   }

@@ -72,7 +72,9 @@ const signUp = () => {
         height: 100%;
         object-fit: cover;
         object-position: center;
-        position: fixed;
+        position: absolute;
+        left: 0%;
+        top: 0%;
         z-index: -1;
     }
     .signin-wrapper {

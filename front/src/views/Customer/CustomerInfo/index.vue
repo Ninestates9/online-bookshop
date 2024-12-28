@@ -122,8 +122,8 @@ const getuserinfo = () => {
     )
         .then(response => {
             let responseData = response.data;
-            store.userid = responseData.info.Uno;
-            store.username = responseData.info.Uno;
+            store.setUserId(responseData.info.Uno);
+            store.username = responseData.info.Uname;
             store.userlevel = responseData.info.level;
             store.address = responseData.info.address;
             store.balance = responseData.info.balance;
@@ -176,5 +176,8 @@ const getuserinfo = () => {
 
 button {
     margin-left: 10px;
+}
+button {
+  background-color: aqua;
 }
 </style>
