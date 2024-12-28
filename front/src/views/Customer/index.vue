@@ -43,7 +43,7 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 const store = mainStore();
 const router = useRouter();
-const message = ref(store.usermessage);
+const message = ref('');
 function navigateTo(componentName) {
     // 路由导航
     router.push({ name: componentName });
@@ -112,7 +112,7 @@ const dialogVisible = ref(false);
 const sendMessage = () => {
     let formData = new FormData();
             formData.append('Uno', store.userid);
-            formData.append('message', message);
+            formData.append('message', message.value);
             axios({
                 method: 'post',
                 url: `${store.ip}/api/sendMsg`,
