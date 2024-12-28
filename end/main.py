@@ -55,9 +55,11 @@ def getBookInfo(p_cursor, p_Bno, p_Bsubno):
     book = {}
     book["Bno"] = p_Bno
     book["Bsubno"] = p_Bsubno    
-    sql = f"select Bname, press, price, quantity, cover, catalog, position from book where Bno = '{p_Bno}' and Bsubno = {p_Bsubno};"
+    sql = f"select Bname, press, price, quantity, cover, catalog, position from book where Bno = '{p_Bno}' and Bsubno = {p_Bsubno} and isValid = 1;"
     p_cursor.execute(sql)
     result = p_cursor.fetchone()
+    if result == None:
+        return {}
     book["Bname"] = result[0]
     book["press"] = result[1]
     book["price"] = result[2]
@@ -240,7 +242,7 @@ def getHistory():
             state = result[3]
             orderTime = result[4]
             books = getOrderBook(cursor, row[0])
-            order = {"books":books, "totalMoney":totalMoney, "discountMoney":discountMoney, "deliveryAddress":deliveryAddress, "state":state, "orderTime":orderTime}
+            order = {"Ono":row[0], "books":books, "totalMoney":totalMoney, "discountMoney":discountMoney, "deliveryAddress":deliveryAddress, "state":state, "orderTime":orderTime}
             orders.append(order)
         data = {"ret": 0, "orders":orders}
     closeSQL(conn, cursor)
@@ -270,6 +272,8 @@ def searchBooks():
         sql = f"call searchBookBy{type}('{content}');"
     cursor.execute(sql)
     result = cursor.fetchall()
+    if result == {}:
+        return jsonify({"ret":1, "msg":"无目标图书！"})
     for row in result:
         books.append(getBookInfo(cursor, row[0], row[1]))
     data = {"ret":0, "books":books}
@@ -350,7 +354,7 @@ def submitOrder():
     cursor.execute(sql)
     sql = f'''update `order` set state = 'submitted', totalMoney = {totalMoney}, discountMoney = {discountMoney},
             deliveryAddress = '{deliveryAddress}', orderTime = NOW()
-        where Uno = '{Uno}' and state  ='shopping';'''
+        where Ono = {Ono};'''
     cursor.execute(sql)
     data = {"ret":0}
     closeSQL(conn, cursor)
@@ -635,6 +639,70 @@ def addBooks():
             result = cursor.fetchone()
         Ano = result[0]
         sql = f"insert into `write` values('{Bno}', {Bsubno}, {Ano}, {index + 1});"
+        cursor.execute(sql)
+    data = {"ret":0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/deleteMsg', methods=["GET", "POST"])
+def deleteMsg():
+    conn, cursor = connectSQL()
+    Uno = request.form.get("Uno")
+    sql = f"update user set message = NULL where Uno = '{Uno}';"
+    cursor.execute(sql)
+    data = {"ret":0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/deleteBook', methods=["GET", "POST"])
+def deleteBook():
+    conn, cursor = connectSQL()
+    Bno = request.form.get("Bno")
+    Bsubno = request.form.get("Bsubno")
+    sql = f"update book set isValid = 0 where Bno = '{Bno}' and Bsubno = {Bsubno};"
+    cursor.execute(sql)
+    data = {"ret":0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/getVendors', methods=["GET", "POST"])
+def getVendors():
+    conn, cursor = connectSQL()
+    vendors = []
+    sql = f"select Vno, Vname, Vaddress from vendor;"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    for row in result:
+        books = []
+        sql = f"select Bno, Bsubno, state from supply where Vno = {row[0]};"
+        cursor.execute(sql)
+        res = cursor.fetchall()
+        for item in res:
+            sql = f"select Bname where Bno = '{item[0]}' and Bsubno = {item[1]};"
+            cursor.execute(sql)
+            Bname = cursor.fetchall()[0]
+            book = {"Bno":item[0], "Bsubno":item[1], "Bname":Bname, "state":item[2]}
+            books.append(book)
+        vendor = {"Vno":row[0], "Vname":row[1], "Vaddress":row[2], "books":books}
+        vendors.append(vendor)
+    data = {"ret":0, "vendors":vendors}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/addVendor', methods=["GET", "POST"])
+def addVendor():
+    conn, cursor = connectSQL()
+    Vname = request.form.get("Vname")
+    Vaddress = request.form.get("Vaddress")
+    books = request.form.get("books")
+    books = json.loads(books)
+    sql = f"insert into vendor(Vname, Vaddress) values('{Vname}', '{Vaddress}');"
+    cursor.execute(sql)
+    sql = f"select Vno from vendor where Vname = '{Vname}' and Vaddress =  '{Vaddress}';"
+    cursor.execute(sql)
+    Vno = cursor.fetchone()[0]
+    for book in books:
+        sql = f"insert into supply values('{book[0]}', {book[1]}, {Vno}, '{book[2]}');"
         cursor.execute(sql)
     data = {"ret":0}
     closeSQL(conn, cursor)
