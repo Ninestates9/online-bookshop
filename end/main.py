@@ -1,10 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import pymysql
-# import cv2
-import os
-import numpy as np
-import re
+from PIL import Image
+import json
 DEBUG = True
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -36,7 +34,7 @@ def getOrderBook(p_cursor, p_Ono):
         Bno = row_out[0]
         Bsubno = row_out[1]
         orderNumber = row_out[2]
-        sql = f"select Bname, press, price from book where Bno = {Bno} and Bsubno = {Bsubno};"
+        sql = f"select Bname, press, price from book where Bno = '{Bno}' and Bsubno = {Bsubno};"
         p_cursor.execute(sql)
         result = p_cursor.fetchone()
         Bname = result[0]
@@ -49,14 +47,14 @@ def getOrderBook(p_cursor, p_Ono):
         authors = []
         for row in result:
             authors.append(row[1])
-        book = {"Bname":Bname, "authors":authors, "press":press, "price":price, "orderNumber":orderNumber, "total":total}
+        book = {"Bno":Bno, "Bsubno":Bsubno, "Bname":Bname, "authors":authors, "press":press, "price":price, "orderNumber":orderNumber, "total":total}
         books.append(book)
     return books
 
 def getBookInfo(p_cursor, p_Bno, p_Bsubno):
     book = {}
     book["Bno"] = p_Bno
-    book["p_Bsubno"] = p_Bsubno    
+    book["Bsubno"] = p_Bsubno    
     sql = f"select Bname, press, price, quantity, cover, catalog, position from book where Bno = '{p_Bno}' and Bsubno = {p_Bsubno};"
     p_cursor.execute(sql)
     result = p_cursor.fetchone()
@@ -82,6 +80,40 @@ def getBookInfo(p_cursor, p_Bno, p_Bsubno):
         keys.append(row[0])
     book["keys"] = keys
     return book
+
+def processBookOrder(p_cursor, p_Ono, p_level, p_Uno):
+    sql = f"select Bno, Bsubno, orderNumber from ob where Ono = {p_Ono};"
+    p_cursor.execute(sql)
+    result_out = p_cursor.fetchall()
+    totalMoney = 0
+    for row_out in result_out:
+        Bno = row_out[0]
+        Bsubno = row_out[1]
+        orderNumber = row_out[2]
+        sql = f"select price, quantity from book where Bno = '{Bno}' and Bsubno = {Bsubno};"
+        p_cursor.execute(sql)
+        price = p_cursor.fetchone()[0]
+        quantity = p_cursor.fetchone()[1]
+        total = orderNumber * price 
+        totalMoney = totalMoney + total
+        if quantity < orderNumber:
+            insufficientNumber = orderNumber - quantity 
+            f_registerShortage(p_cursor, Bno, Bsubno, p_Uno, insufficientNumber)
+    rate = [0.1, 0.15, 0.15, 0.2, 0.25]
+    discountMoney = totalMoney * rate[p_level + 1]
+    return totalMoney, discountMoney
+
+def f_registerShortage(cursor, Bno, Bsubno, Uno, insufficientNumber):
+    sql = f"select Sno from shortage where Bno = '{Bno}' and Bsubno = {Bsubno};"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    if result == None:
+        sql = f"insert into shortage(Bno, Bsubno, Uno, insufficientNumber, purchaseTime) values('{Bno}', {Bsubno}, '{Uno}', {insufficientNumber}, now());"
+        cursor.execute(sql)
+    else:
+        Sno = result[0]
+        sql = f"update shortage set insufficientNumber = insufficientNumber + {insufficientNumber}, Uno = '{Uno}' where Sno = {Sno};"
+        cursor.execute(sql)
 
 # 用户登录与注册
 @app.route('/api/signIn', methods=["GET", "POST"])
@@ -191,7 +223,7 @@ def sendMsg():
 def getHistory():
     conn, cursor = connectSQL()
     Uno = request.form.get("Uno")
-    sql = f"select Ono from order where Uno = '{Uno}' and state in('submitted', 'sending', 'finished');"
+    sql = f"select Ono from `order` where Uno = '{Uno}' and state in('submitted', 'delivery', 'finished');"
     cursor.execute(sql)
     result = cursor.fetchall()
     if result == None:
@@ -199,15 +231,16 @@ def getHistory():
     else:
         orders = []
         for row in result:
-            sql = f"select totalMoney, deliveryAddress, state, orderTime from order where Ono = '{row[0]}';"
+            sql = f"select totalMoney, deliveryAddress, discountMoney, state, orderTime from `order` where Ono = '{row[0]}';"
             cursor.execute(sql)
             result = cursor.fetchone()
             totalMoney = result[0]
             deliveryAddress = result[1]
-            state = result[2]
-            orderTime = result[3]
+            discountMoney = result[2]
+            state = result[3]
+            orderTime = result[4]
             books = getOrderBook(cursor, row[0])
-            order = {"books":books, "totalMoney":totalMoney, "deliveryAddress":deliveryAddress, "state":state, "orderTime":orderTime}
+            order = {"books":books, "totalMoney":totalMoney, "discountMoney":discountMoney, "deliveryAddress":deliveryAddress, "state":state, "orderTime":orderTime}
             orders.append(order)
         data = {"ret": 0, "orders":orders}
     closeSQL(conn, cursor)
@@ -248,18 +281,35 @@ def submitShoppingCart():
     conn, cursor = connectSQL()
     Uno = request.form.get("Uno")
     books = request.form.get("books")
-    sql = f"insert into order(Uno, state) values('{Uno}', 'new');select Ono from order where state = 'new';"
+    books = json.loads(books)
+    sql = f"select Ono from `order` where Uno = '{Uno}' and state = 'shopping';"
     cursor.execute(sql)
-    Ono = cursor.fetchone()[0]
-    for book in books:
-        Bno = book[0]
-        Bsubno = book[1]
-        orderNumber = book[2]
-        sql = f"insert into ob(Bno, Bsubno, Ono, orderNumber) values('{Bno}', {Bsubno}, {Ono}, {orderNumber});"
+    result = cursor.fetchone()
+    if result == None:
+        sql = f"insert into `order`(Uno, state) values('{Uno}', 'new');"
         cursor.execute(sql)
-    sql = f"update order set state = 'shopping' where Ono = {Ono}"
-    cursor.execute(sql)
-    data = {"ret":0, "Ono":Ono}
+        sql = f"select Ono from `order` where state = 'new';"
+        cursor.execute(sql)
+        Ono = cursor.fetchone()[0]
+        for book in books:
+            Bno = book[0]
+            Bsubno = book[1]
+            orderNumber = book[2]
+            sql = f"insert into `ob` values('{Bno}', {Bsubno}, {Ono}, {orderNumber});"
+            cursor.execute(sql)
+        sql = f"update `order` set state = 'shopping' where Ono = {Ono}"
+        cursor.execute(sql)
+    else:
+        Ono = result[0]
+        for book in books:
+            Bno = book[0]
+            Bsubno = book[1]
+            orderNumber = book[2]
+            sql = f"delete from ob where Ono = {Ono};"
+            cursor.execute(sql)
+            sql = f"insert into ob(Bno, Bsubno, Ono, orderNumber) values('{Bno}', {Bsubno}, {Ono}, {orderNumber});"
+            cursor.execute(sql)
+    data = {"ret":0}
     closeSQL(conn, cursor)
     return jsonify(data)
 
@@ -267,19 +317,40 @@ def submitShoppingCart():
 def getShoppingCart():
     conn, cursor = connectSQL()
     Uno = request.form.get("Uno")
-    sql = f"select Ono from order where Uno = '{Uno}' and state = 'shopping'"
+    sql = f"select Ono from `order` where Uno = '{Uno}' and state = 'shopping';"
     cursor.execute(sql)
-    Ono = cursor.fetchone()[0]
-    books = getOrderBook(cursor, Ono)
-    data = {"ret":0, "books":books}
+    result = cursor.fetchone()
+    if result == None:
+        data = {"ret":1, "msg":"用户购物车为空！"}
+    else:
+        Ono = result[0]
+        books = getOrderBook(cursor, Ono)
+        data = {"ret":0, "books":books}
     closeSQL(conn, cursor)
     return jsonify(data)
 
 @app.route('/api/submitOrder', methods=["GET", "POST"])
 def submitOrder():
     conn, cursor = connectSQL()
-    Ono = request.form.get("Ono")
-    sql = f"update order set state = 'submitted' where Ono = {Ono}"
+    Uno = request.form.get("Uno")
+    sql = f"select Ono from `order` where Uno = '{Uno}' and state  ='shopping';"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    if result == None:
+        return jsonify({"ret":1, "msg":"历史购物车不存在！"})
+    Ono = result[0]
+    sql = f"select address, level from `user` where Uno = '{Uno}';"
+    cursor.execute(sql)
+    deliveryAddress = cursor.fetchone()[0]
+    level = cursor.fetchone()[1]
+    totalMoney, discountMoney = processBookOrder(cursor, Ono, level, Uno)
+    sql = f'''update `user` set balance = balance - {discountMoney}, 
+        total = total + {discountMoney}
+        where Uno = '{Uno}';'''
+    cursor.execute(sql)
+    sql = f'''update `order` set state = 'submitted', totalMoney = {totalMoney}, discountMoney = {discountMoney},
+            deliveryAddress = '{deliveryAddress}', orderTime = NOW()
+        where Uno = '{Uno}' and state  ='shopping';'''
     cursor.execute(sql)
     data = {"ret":0}
     closeSQL(conn, cursor)
@@ -317,7 +388,7 @@ def getMsg():
 def getOrders():
     orders = []
     conn, cursor = connectSQL()
-    sql = f"select Ono, Uno, totalMoney, deliveryAddress, state, orderTime from order where state in('submitted', 'delivery');"
+    sql = f"select Ono, Uno, totalMoney, discountMoney, deliveryAddress, state, orderTime from `order` where state in('submitted', 'delivery');"
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
@@ -326,9 +397,10 @@ def getOrders():
                 "Uno":row[1],
                 "books":books,
                 "totalMoney":row[2], 
-                "deliveryAddress":row[3], 
-                "state":row[4], 
-                "orderTime":row[5]}
+                "discountMoney":row[3],
+                "deliveryAddress":row[4], 
+                "state":row[5], 
+                "orderTime":row[6]}
         orders.append(order)
     data = {"ret":0, "orders":orders}
     closeSQL(conn, cursor)
@@ -379,6 +451,8 @@ def getPurchase():
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
+        if row[0] == 0:
+            continue
         sql = f"select Sno from shortage where Pno = {row[0]};"
         cursor.execute(sql)
         SnoSet = cursor.fetchall()
@@ -387,6 +461,188 @@ def getPurchase():
     data = {"ret":0, "purchase":purchase}
     closeSQL(conn, cursor)
     return jsonify(data)
+
+@app.route('/api/updateUserInfo', methods=["GET", "POST"])
+def updateUserInfo():
+    conn, cursor = connectSQL()
+    Uno = request.form.get("Uno")
+    level = request.form.get("level")
+    sql = f"select Uno from user where Uno = '{Uno}';"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    if result == None:
+        data = {"ret": 1, "msg": "用户不存在！"}
+    else:
+        sql = f"update user set level = {level} where Uno = '{Uno}';"
+        cursor.execute(sql)
+        data = {"ret": 0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/deliver', methods=["GET", "POST"])
+def deliver():
+    conn, cursor = connectSQL()
+    Ono = request.form.get("Ono")
+    sql = f"select Ono from `order` where Ono = {Ono};"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    if result == None:
+        data = {"ret": 1, "msg": "订单不存在！"}
+    else:
+        sql = f"select Bno, Bsubno, orderNumber from ob where Ono = {Ono};"
+        cursor.execute(sql)
+        result_out = cursor.fetchall()
+        for row_out in result_out:
+            Bno = row_out[0]
+            Bsubno = row_out[1]
+            orderNumber = row_out[2]
+            sql = f"select quantity from book where Bno = '{Bno}' and Bsubno = {Bsubno};"
+            cursor.execute(sql)
+            quantity = cursor.fetchone()[0]
+            if quantity < orderNumber:
+                return jsonify({"ret": 1, "msg": f"书号{Bno}_{Bsubno}存货不足！"})
+            sql = f"update `book` set quantity = quantity - {orderNumber} where Bno = '{Bno}' and Bsubno = {Bsubno};"
+            cursor.execute(sql)
+        sql = f"update `order` set state = 'delivery' where Ono = {Ono};"
+        cursor.execute(sql)
+        data = {"ret": 0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/finish', methods=["GET", "POST"])
+def finish():
+    conn, cursor = connectSQL()
+    Ono = request.form.get("Ono")
+    sql = f"select Ono from `order` where Ono = {Ono};"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    if result == None:
+        data = {"ret": 1, "msg": "订单不存在！"}
+    else:
+        sql = f"update `order` set state = 'finished' where Ono = {Ono};"
+        cursor.execute(sql)
+        data = {"ret": 0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/purchase', methods=["GET", "POST"])
+def purchase():
+    conn, cursor = connectSQL()
+    shortageSet = request.form.getlist("shortageSet")
+    sql = f"select max(Pno) from shortage;"
+    cursor.execute(sql)
+    Pno = cursor.fetchone()
+    if Pno[0] == None:
+        Pno = 1
+    else:
+        Pno = Pno[0] + 1
+    for Sno in shortageSet:
+        sql = f"update shortage set Pno = {Pno} where Sno = {Sno};"
+        cursor.execute(sql)
+    data = {"ret":0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/finishPurchase', methods=["GET", "POST"])
+def finishPurchase():
+    conn, cursor = connectSQL()
+    Pno = request.form.get("Pno")
+    sql = f"select Bno, Bsubno, insufficientNumber from shortage where Pno = {Pno};"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    if result == None:
+        data = {"ret":1, "msg":"该采购单不存在！"}
+    else:
+        for row in result:
+            sql = f"updata book set quantity = quantity + {row[2]} where Bno = '{row[0]}' and Bsubno = {row[1]}"
+        sql = f"update shortage set Pno = 0 where Pno = {Pno};"
+        cursor.execute(sql)
+    data = {"ret":0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/registerShortage', methods=["GET", "POST"])
+def registerShortage():
+    conn, cursor = connectSQL()
+    Bno = request.form.get("Bno")
+    Bsubno = request.form.get("Bsubno")
+    Uno = request.form.get("Uno")
+    insufficientNumber = request.form.get("insufficientNumber")
+    f_registerShortage(cursor, Bno, Bsubno, Uno, insufficientNumber)
+    data = {"ret":0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/updatePrice', methods=["GET", "POST"])
+def updatePrice():
+    conn, cursor = connectSQL()
+    Bno = request.form.get("Bno")
+    Bsubno = request.form.get("Bsubno")
+    price = request.form.get("price")
+    sql = f"update book set price = {price} where Bno = '{Bno}' and Bsubno = {Bsubno};"
+    cursor.execute(sql)
+    data = {"ret":0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/api/addBooks', methods=["GET", "POST"])
+def addBooks():
+    conn, cursor = connectSQL()
+    Bno = request.form.get("Bno")
+    Bsubno = request.form.get("Bsubno")
+    Bname = request.form.get("Bname")
+    authors = request.form.getlist("authors")
+    keys = request.form.getlist("keys")
+    press = request.form.get("press")
+    price = request.form.get("price")
+    quantity = request.form.get("quantity")
+    catalog = request.form.get("catalog")
+    position = request.form.get("position")
+    cover_data = request.files["cover"]
+    sql = f"select Bno from book where Bno = '{Bno}' and Bsubno = {Bsubno};"
+    cursor.execute(sql)
+    result = cursor.fetchone()
+    if result != None:
+        return jsonify({"ret":1, "msg":"与已有图书重复！"})
+    coverName = cover_data.filename
+    cover = Image.open(cover_data.stream)
+    coverPath = f"../source/cover/{coverName}"
+    cover.save(coverPath)
+    sql = f"insert into book values('{Bno}', {Bsubno}, '{Bname}', '{press}', {price}, {quantity}, '{coverName}', '{catalog}', {position});"
+    cursor.execute(sql)
+    for keyword in keys:
+        sql = f"select Kno from `keywords` where keyword = '{keyword}';"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result == None:
+            sql = f"insert into `keywords`(keyword) values('{keyword}');"
+            cursor.execute(sql)
+            sql = f"select Kno from `keywords` where keyword = '{keyword}';"
+            cursor.execute(sql)
+            result = cursor.fetchone()
+        Kno = result[0]
+        sql = f"insert into tags values('{Bno}', {Bsubno}, {Kno});"
+        cursor.execute(sql)
+    for index, author in enumerate(authors):
+        sql = f"select Ano from author where Aname = '{author}';"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        if result == None:
+            sql = f"insert into author(Aname) values('{author}');"
+            cursor.execute(sql)
+            sql = f"select Ano from author where Aname = '{author}';"
+            cursor.execute(sql)
+            result = cursor.fetchone()
+        Ano = result[0]
+        sql = f"insert into `write` values('{Bno}', {Bsubno}, {Ano}, {index + 1});"
+        cursor.execute(sql)
+    data = {"ret":0}
+    closeSQL(conn, cursor)
+    return jsonify(data)
+
+@app.route('/cover/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(directory="../source/cover", path=filename)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port="5000", debug=True)
