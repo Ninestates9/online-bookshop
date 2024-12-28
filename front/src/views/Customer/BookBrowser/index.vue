@@ -7,49 +7,42 @@
       </div>
       <div class="search-options">
         <label v-for="option in searchOptions" :key="option.value">
-          <input type="radio" name="searchOption" :value="option.value" v-model="selectedOption"
-            @change="updateSearchOption" />
+          <input type="radio" name="searchOption" :value="option.value" v-model="selectedOption" @change="updateSearchOption" />
           {{ option.label }}
         </label>
       </div>
     </div>
     <div class="bookbrowser">
-      <el-row :gutter="20">
-  <el-col v-for="book in books" :key="book.Bno" :span="24"> <!-- 设置 span 为 24 -->
-    <el-card class="book-card">
-      <img :src="store.ip+'/cover/' +book.cover" alt="书本封面" class="book-cover" />
-      <div class="book-info">
-        <p>书号: {{ book.Bno }}</p>
-        <p>丛书号: {{ book.Bsubno }}</p>
-        <h3>{{ book.Bname }}</h3>
-        <p>作者: {{ book.authors }}</p>
-        <p>关键字: {{ book.keys }}</p>
-        <p>出版社: {{ book.press }}</p>
-        <p>价格: ¥{{ book.price }}</p>
-        <p>库存: {{ book.quantity }}</p>
-        <p>目录: {{ book.catalog }}</p>
-        <p>位置: {{ book.position }}</p>
-        <el-button size="small" @click="openPurchaseModal(book)">购买</el-button>
-      </div>
-    </el-card>
-  </el-col>
-</el-row>
+      <div v-for="book in books" :key="book.Bno" class="book-card">
+    <img :src="store.ip + '/cover/' + book.cover" alt="书本封面" class="book-cover" />
+    <div class="book-info">
+      <h3>{{ book.Bname }}</h3>
+      <p>{{ book.authors.join(', ') }}</p>
+      <p>¥{{ book.price }}</p>
+      <el-button size="small" @click="openPurchaseModal(book)">查看详情</el-button>
+    </div>
+  </div>
 
-
-      <el-dialog v-model="isModalOpen" title="购买书籍">
+      <el-dialog v-model="isModalOpen" title="书籍详情">
         <div>
-          <p>书名: {{ selectedBook?.Bname }}</p>
+          <img :src="store.ip + '/cover/' + selectedBook?.cover" alt="书本封面" class="detail-book-cover" />
+          <p>书号: {{ selectedBook?.Bno }}</p>
+          <p>丛书号: {{ selectedBook?.Bsubno }}</p>
+          <h3>{{ selectedBook?.Bname }}</h3>
           <p>作者: {{ selectedBook?.authors.join(', ') }}</p>
+          <p>关键字: {{ selectedBook?.keys.join(', ') }}</p>
           <p>出版社: {{ selectedBook?.press }}</p>
           <p>价格: ¥{{ selectedBook?.price }}</p>
+          <p>库存: {{ selectedBook?.quantity }}</p>
+          <p>目录: {{ selectedBook?.catalog }}</p>
+          <p>位置: {{ selectedBook?.position }}</p>
           <el-input-number v-model="orderQuantity" :min="1" :max="selectedBook?.quantity" label="选择数量" />
         </div>
         <template #footer>
           <el-button @click="isModalOpen = false">取消</el-button>
-          <el-button type="primary" @click="addToCart">确认</el-button>
+          <el-button type="primary" @click="addToCart">确认购买</el-button>
         </template>
       </el-dialog>
-
     </div>
   </div>
 </template>
@@ -78,6 +71,24 @@ const searchOptions = [
 
 const selectedOption = ref('Bno'); // 默认选中的值
 
+const openPurchaseModal = (book) => {
+  selectedBook.value = {
+    Bno: book.Bno,
+    Bsubno: book.Bsubno,
+    Bname: book.Bname,
+    authors: book.authors,
+    press: book.press,
+    price: book.price,
+    quantity: book.quantity,
+    cover: book.cover, // Include the cover image for detail view
+    keys: book.keys,
+    catalog: book.catalog,
+    position: book.position,
+  };
+  orderQuantity.value = 1; // Reset quantity
+  isModalOpen.value = true;
+};
+
 // 更新选中的搜索选项
 const updateSearchOption = () => {
   store.searchOP = selectedOption.value; // 保存到 store
@@ -86,23 +97,8 @@ const updateSearchOption = () => {
 
 // 书籍数据
 const books = ref([
-  { },
-  // 更多书籍
-]);
 
-const openPurchaseModal = (book) => {
-  selectedBook.value = {
-    Bno: book.Bno,               // 确保包含书号
-    Bsubno: book.Bsubno,         // 确保包含书号子编号
-    Bname: book.Bname,
-    authors: book.authors,
-    press: book.press,
-    price: book.price,
-    quantity: book.quantity,
-  };
-  orderQuantity.value = 1; // 重置数量
-  isModalOpen.value = true;
-};
+]);
 
 
 const addToCart = () => {
@@ -212,27 +208,44 @@ const getBookBrowser = () => {
 }
 
 .bookbrowser {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;  /* 允许内容换行 */
-  justify-content: flex-start;  /* 元素靠左排列 */
-  align-items: flex-start; /* 元素顶部对齐 */
+  display: flex; /* 使用 flexbox 进行布局 */
+  flex-wrap: wrap; /* 允许换行 */
+  justify-content: flex-start; /* 左对齐 */
   background-color: rgba(233, 58, 5, 0.421);
-  width: 100%; /* 确保容器宽度为100% */
-  height: 100%;
+  width: 100%; /* 确保容器宽度为 100% */
   padding: 10px;
-  overflow-y: auto;
+  overflow-y: auto; /* 允许垂直滚动 */
 }
-
 
 .book-card {
-  max-width: 30%;
-  width: 30%;  /* Ensures that each card can stretch to its container's width */
+  flex: 0 1 calc(33% - 20px); /* 每个卡片占据三分之一的宽度，减去边距 */
+  display: flex;
+  flex-direction: column; /* 垂直排列内容 */
+  justify-content: space-between; /* 内容均匀分布 */
+  height: 450px; /* 固定高度 */
+  margin: 10px; /* 卡片之间的间距 */
+  border-radius: 8px; /* 圆角 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+  box-sizing: border-box; /* 包含边距和填充在宽高内 */
 }
-
 
 .book-cover {
-  width: 100%;
-  height: auto;
+  width: 100%; /* 充满宽度 */
+  height: 200px; /* 固定高度 */
+  object-fit: cover; /* 保持比例并覆盖 */
 }
+
+.book-info {
+  padding: 10px; /* 文本内边距 */
+  flex-grow: 1; /* 允许文本区域占用剩余空间 */
+}
+
+
+
+.detail-book-cover {
+  width: 50%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
 </style>

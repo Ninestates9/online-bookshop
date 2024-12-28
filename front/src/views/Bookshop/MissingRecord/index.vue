@@ -233,6 +233,18 @@ onMounted(() => {
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
+  display: flex; /* 使用 flexbox 布局 */
+  flex-direction: column; /* 纵向排列内容 */
+  min-height: 120px; /* 设置最小高度 */
+  justify-content: center;
+}
+
+
+.el-checkbox__label p {
+  margin: 5px 0; /* 设置段落之间的间距 */
+  overflow: hidden; /* 隐藏溢出 */
+  text-overflow: ellipsis; /* 使用省略号表示溢出文本 */
+  white-space: nowrap; /* 不换行 */
 }
 
 hr {

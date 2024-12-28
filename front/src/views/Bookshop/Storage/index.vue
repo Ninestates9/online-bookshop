@@ -5,12 +5,12 @@
         </div>
         <div class="storage">
             <div v-for="(book, index) in storageItems" :key="book.Bno" class="storage-item">
-                <img :src="`${store.ip}/cover/${book.cover}`" alt="书本封面" class="book-cover" />
-                <div class="book-details">
-                    <div class="basic-details">
+                <div class="book-card">
+                    <img :src="`${store.ip}/cover/${book.cover}`" alt="书本封面" class="book-cover" />
+                    <div class="book-details">
+                        <h4>{{ book.Bname }}</h4>
                         <p>书号: {{ book.Bno }}</p>
                         <p>丛书号: {{ book.Bsubno }}</p>
-                        <h4>{{ book.Bname }}</h4>
                         <p>作者: {{ book.authors.join(', ') }}</p>
                         <p>关键字: {{ book.keys.join(', ') }}</p>
                         <p>出版社: {{ book.press }}</p>
@@ -19,13 +19,16 @@
                             <input type="number" v-model.number="book.price" min="0" />
                             <el-button size="small" @click="updatePrice(book)">更新价格</el-button>
                         </div>
-
                         <p>库存量: {{ book.quantity }}</p>
                         <p>目录: {{ book.catalog }}</p>
                         <p>位置: {{ book.position }}</p>
                     </div>
                 </div>
             </div>
+        </div>
+        
+        <!-- 添加书目按钮 -->
+        <div class="add-button-container">
             <el-button type="primary" @click="showDialog">添加书目</el-button>
         </div>
 
@@ -83,7 +86,6 @@
                 <el-button type="primary" @click="addBook">确 定</el-button>
             </span>
         </el-dialog>
-
     </div>
 </template>
 
@@ -261,40 +263,77 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.rightmain {
+  position: relative;
+  display: grid;
+  height: 98.5vh;
+  width: 100%;
+  grid-template-rows: 15% 77% 8%;
+}
+
+.righttop {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(91, 247, 1, 0.421);
+  width: 100%;
+  height: 100%;
+}
+
 .storage {
     padding: 20px;
-    font-size: 18px;
-    text-align: left;
+    display: flex;
+    flex-wrap: wrap; /* 允许换行 */
+    gap: 20px; /* 卡片之间的间距 */
     overflow-y: auto;
 }
 
 .storage-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 15px;
+    flex: 1 1 calc(33.33% - 20px); /* 每个卡片占据三分之一的宽度，减去间距 */
+    max-width: calc(33.33% - 20px); /* 限制最大宽度 */
+}
+
+.book-card {
+    background: white; /* 卡片背景 */
+    border-radius: 8px; /* 圆角 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 卡片阴影 */
+    padding: 15px; /* 内边距 */
+    display: flex; /* 使内容垂直排列 */
+    flex-direction: column; /* 垂直排列内容 */
+    height: 100%; /* 确保卡片高度一致 */
 }
 
 .book-cover {
-    width: 100px;
-    height: auto;
-    margin-right: 20px;
-}
-
-.book-details {
-    display: flex;
+    width: 100%; /* 充满宽度 */
+    height: auto; /* 自适应高度 */
+    max-height: 150px; /* 限制最大高度 */
+    object-fit: cover; /* 保持比例 */
+    margin-bottom: 10px; /* 下边距 */
 }
 
 .price-control {
     display: flex;
     align-items: center;
+    margin-top: 5px;
 }
 
 .price-control input {
     width: 80px;
     margin-left: 10px;
     text-align: center;
+}
+
+.book-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.book-details p {
+    margin: 0; /* 清除默认段落间距 */
+}
+.add-button-container {
+    padding: 20px; /* 添加适当的内边距 */
+    text-align: center; /* 按钮居中 */
 }
 
 .upload-demo {

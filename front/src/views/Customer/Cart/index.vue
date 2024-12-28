@@ -4,31 +4,28 @@
             <h3 class="topinfo">购物车</h3>
         </div>
         <div class="cart">
-            <div v-for="(book, index) in store.cartItems" :key="book.Bno + book.Bsubno" class="cart-item">
-                <div class="book-details">
-                  <div class="basic-details">
-                    <h4>{{ book.Bname }}</h4>
-                    <p>书号: {{ book.Bno }}</p>
-                    <p>丛书号: {{ book.Bsubno }}</p>
-                    <p>作者: {{ book.authors.join(', ') }}</p>
-                    <p>出版社: {{ book.press }}</p>
-                    <p>单价: ¥{{ book.price }}</p>
-                  </div>
-                  <div class="quantity-control">
-                      <button @click="decreaseQuantity(index)">-</button>
-                      <input type="number" v-model.number="book.orderNumber" min="1" />
-                      <button @click="increaseQuantity(index)">+</button>
-                      <p>总价: ¥{{ (book.price * book.orderNumber).toFixed(2) }}</p>
-                  </div>
-                  <button class='deleteBtn' @click="removeItem(index)">删除</button>
-                </div>
-            </div>
-            <div class="total">
-                <h4>总计: ¥{{ totalPrice.toFixed(2) }}</h4>
-                <h4>优惠后金额: ¥{{ getDiscount(totalPrice).toFixed(2) }}</h4>
-                <button class="purchase" @click="submitCart">购买</button>
+    <div v-for="(book, index) in store.cartItems" :key="book.Bno + book.Bsubno" class="cart-item">
+        <div class="book-details">
+            <h4>{{ book.Bname }}</h4>
+            <p>书号: {{ book.Bno }}</p>
+            <p>丛书号: {{ book.Bsubno }}</p>
+            <p>作者: {{ book.authors.join(', ') }}</p>
+            <p>出版社: {{ book.press }}</p>
+        </div>
+        <div class="price-quantity">
+            <p>单价: ¥{{ book.price }}</p>
+            <div class="quantity-control">
+                <button @click="decreaseQuantity(index)">-</button>
+                <input type="number" v-model.number="book.orderNumber" min="1" />
+                <button @click="increaseQuantity(index)">+</button>
             </div>
         </div>
+        <div class="total-delete">
+            <p>总价: ¥{{ (book.price * book.orderNumber).toFixed(2) }}</p>
+            <button class='deleteBtn' @click="removeItem(index)">删除</button>
+        </div>
+    </div>
+</div>
     </div>
   </template>
   
@@ -167,46 +164,57 @@ const submitCart = () => {
   }
   
   .cart-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 15px;
-      border-bottom: 1px solid #ccc;
-      padding-bottom: 15px;
-  }
-  
-  .book-details {
-      display: flex;
-      flex-direction: column;
-  }
-  
-  .quantity-control {
-      align-items: center;
-  }
-  
-  .quantity-control input {
-      width: 50px;
-      text-align: center;
-  }
-  
-  .quantity-control button {
-      background-color: aliceblue;
-      text-align: center;
-      height: 40px;
-      width: 40px;
-  }
-  
-  .deleteBtn {
-    background-color: aqua;
-  }
+    display: flex;
+    justify-content: space-between; /* 使内容在行内均匀分布 */
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 15px;
+}
 
-  .purchase {
+.book-details {
+    display: flex;
+    flex-direction: column; /* 垂直排列 */
+    margin-left: 5%;
+}
+
+.price-quantity {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    margin-right: 5%; /* 右侧间距 */
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    margin-left: 5%;
+}
+
+.quantity-control input {
+    width: 50px;
+    text-align: center;
+    margin: 0 5px; /* 左右间距 */
+}
+
+.total-delete {
+    display: flex;
+    flex-direction: column; /* 竖向排列 */
+    align-items: flex-end; /* 右对齐 */
+    margin-right: 5%;
+}
+
+.deleteBtn {
     background-color: aqua;
-  }
-  
-  .total {
-      margin-top: 20px;
-      font-size: 20px;
-      font-weight: bold;
-  }
+}
+
+.purchase {
+    background-color: aqua;
+}
+
+.total {
+    margin-top: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
   </style>
   
