@@ -6,13 +6,13 @@
                 注册
             </h1>
             <div class="form-wrapper">
-                <h2 class="input-title">用户名</h2>
-                <input type="text" v-model="username" placeholder="请输入用户名" class="input-item">
+                <h2 class="input-title">账号</h2>
+                <input type="text" v-model="username" placeholder="请输入账号" class="input-item">
+                <h2 class="input-title">昵称</h2>
+                <input type="text" v-model="uname" placeholder="请输入昵称" class="input-item">
                 <h2 class="input-title">密码</h2>
-                <input type="password" v-model="password1" placeholder="请输入密码" class="input-item">
-                <h2 class="input-title">确认密码</h2>
-                <input type="password" v-model="password2" placeholder="请再次输入密码" class="input-item">
-                <button @click="check()" class="btn">
+                <input type="password" v-model="password" placeholder="请输入密码" class="input-item">
+                <button @click="signUp()" class="btn">
                     注册
                 </button>
             </div>
@@ -33,61 +33,33 @@ import router from "../../router";
 
 const store = mainStore();
 const username = ref('');
-const password1 = ref('');
-const password2 = ref('');
+const password = ref('');
+const uname = ref('');
 
-const check = () => {
-    if (username.value === '' || password1.value === '' || password2.value === '') {
-        ElMessage({message: '用户名和密码不能为空', type: 'error', duration: 5 * 1000, grouping: true});
-        return;
-    }
 
-    if (/^\s*$/.test(username.value)) {
-        ElMessage({message: '用户名不能为空格', type: 'error', duration: 5 * 1000, grouping: true});
-        return;
-    }
-
-    if (password1.value.length < 6 || password1.value.length > 24) {
-        ElMessage({message: '密码长度必须为6-24位', type: 'error', duration: 5 * 1000, grouping: true});
-        return;
-    }
-
-    console.log('password1:', password1);
-    console.log('password2:', password2);
-
-    if (password1.value !== password2.value) {
-        ElMessage({message: '输入密码不一致', type: 'error', duration: 5 * 1000, grouping: true});
-    }
-    else {
-        signUp();
-    }
-}
 
 const signUp = () => {
     let formData = new FormData();
-    formData.append('username', username.value);
-    formData.append('password', password1.value);
+    formData.append('Uno', username.value);
+    formData.append('password', password.value);
+    formData.append('Uname', uname.value);
 
     axios({
         method: 'post', 
-        url: `${store.ipAddress}/api/signUp`, 
+        url: `${store.ip}/api/signUp`, 
         data: formData, 
         headers:{'Content-Type': 'multipart/form-data'}}
     )
     .then(response => {
         let responseData = response.data;
         if (responseData.ret === 0) {
-        store.setUsername(username.value);
+        store.Uno=username.value;
         localStorage.setItem('username', username.value);
-        router.push({path:'/'})
+        router.push({path:'/SignIn'})
         } else if(responseData.ret === 1) {
         ElMessage({message: '注册失败：' + responseData.msg, type: 'error', duration: 5 * 1000, grouping: true});
         }
     })
-    .catch(error => {
-        console.error('Error posting data:', error);
-        ElMessage({message: '注册失败：网络错误，请稍后重试！', type: 'error', duration: 5 * 1000, grouping: true});
-    });
 }
 </script>
 
@@ -100,7 +72,9 @@ const signUp = () => {
         height: 100%;
         object-fit: cover;
         object-position: center;
-        position: fixed;
+        position: absolute;
+        left: 0%;
+        top: 0%;
         z-index: -1;
     }
     .signin-wrapper {

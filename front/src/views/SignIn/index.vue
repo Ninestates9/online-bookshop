@@ -6,7 +6,7 @@
                 登录
             </h1>
             <div class="form-wrapper">
-                <h2 class="input-title">用户名</h2>
+                <h2 class="input-title">账号</h2>
                 <input type="text" v-model="username" placeholder="请输入用户名" class="input-item">
                 <h2 class="input-title">密码</h2>
                 <input type="password" v-model="password" placeholder="请输入密码" class="input-item">
@@ -35,26 +35,49 @@ const password = ref('');
 
 const signIn = () =>{
     if (username.value === '' || password.value === '') {
-        ElMessage({message: '用户名和密码不能为空', type: 'error', duration: 5 * 1000, grouping: true});
+        ElMessage({message: '账号和密码不能为空', type: 'error', duration: 5 * 1000, grouping: true});
         return;
     }
     let formData = new FormData();
-    formData.append('username', username.value);
+    formData.append('Uno', username.value);
     formData.append('password', password.value);
     
     axios({
         method: 'post', 
-        url: `${store.ipAddress}/api/signIn`, 
+        url: `${store.ip}/api/signIn`, 
         data: formData, 
         headers:{'Content-Type': 'multipart/form-data'}}
     )
     .then(response => {
+            store.password = password.value;
+            let uno = new FormData();
+            uno.append('Uno',username.value)
+            axios({
+                method: 'post',
+                url: `${store.ip}/api/getInfo`,
+                data: uno,
+                headers: { 'Content-Type': 'multipart/form-data' }
+            }
+            )
+                .then(response => {
+                   let responseData1 = response.data;
+                   store.setUserId(responseData1.info.Uno);
+                   store.username = responseData1.info.Uname;
+                   store.userlevel = responseData1.info.level;
+                   store.address = responseData1.info.address;
+                   store.balance = responseData1.info.balance;
+                })
         let responseData = response.data;
         if (responseData.ret === 0) {
-            store.setUsername(username.value);
-            store.setIsOpen(true);
+            store.setUserId(username.value);
             localStorage.setItem('username', username.value);
-            router.push({path:'/Edit'})
+            if(responseData.type == 'U'){
+            router.push({path:'/Customer'})
+            }
+            else{
+                router.push({path:'/Bookshop'})
+            }
+            
         } else if(responseData.ret === 1) {
             ElMessage({message: '登录失败：' + responseData.msg, type: 'error', duration: 5 * 1000, grouping: true});
         }
@@ -63,6 +86,7 @@ const signIn = () =>{
         console.error('Error posting data:', error);
         ElMessage({message: '登录失败：网络错误，请稍后重试！', type: 'error', duration: 5 * 1000, grouping: true});
     });
+
 }
 </script>
 
@@ -75,7 +99,9 @@ const signIn = () =>{
         height: 100%;
         object-fit: cover;
         object-position: center;
-        position: fixed;
+        position: absolute;
+        left: 0%;
+        top: 0%;
         z-index: -1;
     }
     .signin-wrapper {
