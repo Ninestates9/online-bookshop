@@ -59,7 +59,9 @@ const logout = () => {
 
 <style>
 .CustomerMain {
-    position: relative;
+    left: 0%;
+    top:0%;
+    position: absolute;
     width: 100vw;
     /* 修正为 100vw */
     height: 98.5vh;
