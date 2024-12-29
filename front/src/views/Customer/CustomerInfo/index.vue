@@ -3,39 +3,33 @@
         <div class="righttop">
             <h3 class="topinfo">用户信息</h3>
         </div>
-        <div class="userinfo">
-            <p>
-                <strong>用户ID:</strong> {{ store.userid }}
-            </p>
-            <p>
-                <strong>用户名:</strong>
+        <el-descriptions :border="true"  column="1">
+            <el-descriptions-item label="用户ID">{{ store.userid }}</el-descriptions-item>
+            <el-descriptions-item label="用户名">
                 <span v-if="!isEditing.username">{{ store.username }}</span>
                 <input v-if="isEditing.username" v-model="newUsername" type="text" />
-                <button @click="toggleEdit('username')">
+                <el-button @click="toggleEdit('username')">
                     {{ isEditing.username ? '保存' : '修改信息' }}
-                </button>
-            </p>
-            <p>
-                <strong>地址:</strong>
+                </el-button>
+            </el-descriptions-item>
+            <el-descriptions-item label="地址">
                 <span v-if="!isEditing.address">{{ store.address }}</span>
                 <input v-if="isEditing.address" v-model="newAddress" type="text" />
-                <button @click="toggleEdit('address')">
+                <el-button @click="toggleEdit('address')">
                     {{ isEditing.address ? '保存' : '修改信息' }}
-                </button>
-            </p>
-            <p>
-                <strong>余额:</strong> {{ store.balance }}
-            </p>
-            <p>
-                <strong>信用等级:</strong> {{ store.userlevel }}
-            </p>
-            <button id="recharge" @click="recharge()">充值</button>
-        </div>
+                </el-button>
+            </el-descriptions-item>
+            <el-descriptions-item label="余额">{{ store.balance }}
+                <el-button id="recharge" @click="recharge()">充值</el-button>
+            </el-descriptions-item>
+            <el-descriptions-item label="信用等级">{{ store.userlevel }}</el-descriptions-item>
+        </el-descriptions>
+
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onBeforeUnmount, onMounted } from 'vue';
+import { ref, onBeforeUnmount } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
@@ -49,77 +43,56 @@ const toggleEdit = (field: 'username' | 'address') => {
     if (field === 'username') {
         isEditing.value.username = !isEditing.value.username;
         if (!isEditing.value.username) {
-            // 这里可以调用接口保存修改后的用户名
-            store.username = newUsername.value;
-
+            updateUserInfo('username', newUsername.value);
         }
     } else if (field === 'address') {
         isEditing.value.address = !isEditing.value.address;
         if (!isEditing.value.address) {
-            // 这里可以调用接口保存修改后的地址
-            store.address = newAddress.value;
-
+            updateUserInfo('address', newAddress.value);
         }
     }
-    let formData = new FormData();
-            formData.append('Uno', store.userid);
-            formData.append('password', store.password);
-            formData.append('Uname', store.username);
-            formData.append('address', store.address);
-
-            axios({
-                method: 'post',
-                url: `${store.ip}/api/updateInfo`,
-                data: formData,
-                headers: { 'Content-Type': 'multipart/form-data' }
-            }
-            )
-                .then(response => {
-                    let responseData = response.data;
-                    if (responseData.ret === 1) {
-                        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-                    }
-                })
 };
 
-onBeforeUnmount(()=>{
-    getuserinfo();
-});
+const updateUserInfo = (field: 'username' | 'address', value: string) => {
+    let formData = new FormData();
+    formData.append('Uno', store.userid);
+    formData.append('password', store.password);
+    if (field === 'username') {
+        store.username = value;
+        formData.append('Uname', value);
+    } else {
+        store.address = value;
+        formData.append('address', value);
+    }
 
+    axios.post(`${store.ip}/api/updateInfo`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        .then(response => {
+            let responseData = response.data;
+            if (responseData.ret === 1) {
+                ElMessage({ message: responseData.msg, type: 'error', duration: 5000 });
+            }
+        });
+};
 
 const recharge = () => {
     let formData = new FormData();
-            formData.append('Uno', store.userid);
-            formData.append('money', 100);
-            axios({
-                method: 'post',
-                url: `${store.ip}/api/pre_pay`,
-                data: formData,
-                headers: { 'Content-Type': 'multipart/form-data' }
+    formData.append('Uno', store.userid);
+    formData.append('money', 100);
+    axios.post(`${store.ip}/api/pre_pay`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+        .then(response => {
+            let responseData = response.data;
+            if (responseData.ret === 1) {
+                ElMessage({ message: responseData.msg, type: 'error', duration: 5000 });
+            } else {
+                getUserInfo();
             }
-            )
-                .then(response => {
-                    let responseData = response.data;
-                    if (responseData.ret === 1) {
-                        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-                    }
-                    else{
-                        getuserinfo();
-                    }
-                })
-}
+        });
+};
 
-
-const getuserinfo = () => {
+const getUserInfo = () => {
     let formdata = new FormData();
-    formdata.append('Uno', store.userid)
-    axios({
-        method: 'post',
-        url: `${store.ip}/api/getInfo`,
-        data: formdata,
-        headers: { 'Content-Type': 'multipart/form-data' }
-    }
-    )
+    formdata.append('Uno', store.userid);
+    axios.post(`${store.ip}/api/getInfo`, formdata, { headers: { 'Content-Type': 'multipart/form-data' } })
         .then(response => {
             let responseData = response.data;
             store.setUserId(responseData.info.Uno);
@@ -130,9 +103,13 @@ const getuserinfo = () => {
         })
         .catch(error => {
             console.error('Error posting data:', error);
-            ElMessage({ message: '网络错误，请稍后重试！', type: 'error', duration: 5 * 1000, grouping: true });
+            ElMessage({ message: '网络错误，请稍后重试！', type: 'error', duration: 5000 });
         });
-}
+};
+
+onBeforeUnmount(() => {
+    getUserInfo();
+});
 </script>
 
 <style>
@@ -163,21 +140,14 @@ const getuserinfo = () => {
     font-size: 50px;
 }
 
-.userinfo {
+.el-descriptions {
     padding: 20px;
     font-size: 18px;
     text-align: left;
-    /* 确保文本左对齐 */
-}
-
-.userinfo p {
-    margin: 5px 0;
 }
 
 button {
     margin-left: 10px;
-}
-button {
-  background-color: aqua;
+    background-color: aqua;
 }
 </style>
