@@ -1,5 +1,6 @@
 <template>
     <div class="rightmain">
+        <VantaBirds />
         <div class="righttop">
             <h3 class="topinfo">用户信息</h3>
         </div>
@@ -39,7 +40,7 @@ import { ref, onBeforeUnmount, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
-
+import VantaBirds from '../../VantaBirds.vue';
 const store = mainStore();
 const isEditing = ref({ username: false, address: false });
 const newUsername = ref(store.username);
@@ -62,51 +63,51 @@ const toggleEdit = (field: 'username' | 'address') => {
         }
     }
     let formData = new FormData();
-            formData.append('Uno', store.userid);
-            formData.append('password', store.password);
-            formData.append('Uname', store.username);
-            formData.append('address', store.address);
+    formData.append('Uno', store.userid);
+    formData.append('password', store.password);
+    formData.append('Uname', store.username);
+    formData.append('address', store.address);
 
-            axios({
-                method: 'post',
-                url: `${store.ip}/api/updateInfo`,
-                data: formData,
-                headers: { 'Content-Type': 'multipart/form-data' }
+    axios({
+        method: 'post',
+        url: `${store.ip}/api/updateInfo`,
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }
+    )
+        .then(response => {
+            let responseData = response.data;
+            if (responseData.ret === 1) {
+                ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
             }
-            )
-                .then(response => {
-                    let responseData = response.data;
-                    if (responseData.ret === 1) {
-                        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-                    }
-                })
+        })
 };
 
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
     getuserinfo();
 });
 
 
 const recharge = () => {
     let formData = new FormData();
-            formData.append('Uno', store.userid);
-            formData.append('money', 100);
-            axios({
-                method: 'post',
-                url: `${store.ip}/api/pre_pay`,
-                data: formData,
-                headers: { 'Content-Type': 'multipart/form-data' }
+    formData.append('Uno', store.userid);
+    formData.append('money', 100);
+    axios({
+        method: 'post',
+        url: `${store.ip}/api/pre_pay`,
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }
+    )
+        .then(response => {
+            let responseData = response.data;
+            if (responseData.ret === 1) {
+                ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
             }
-            )
-                .then(response => {
-                    let responseData = response.data;
-                    if (responseData.ret === 1) {
-                        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-                    }
-                    else{
-                        getuserinfo();
-                    }
-                })
+            else {
+                getuserinfo();
+            }
+        })
 }
 
 
@@ -150,7 +151,7 @@ const getuserinfo = () => {
     position: relative;
     overflow: hidden;
     align-items: center;
-    background-color: rgba(91, 247, 1, 0.421);
+    background-color: rgba(255, 255, 255, 0);
     width: 100%;
     height: 100%;
 }
@@ -177,7 +178,8 @@ const getuserinfo = () => {
 button {
     margin-left: 10px;
 }
+
 button {
-  background-color: aqua;
+    background-color: aqua;
 }
 </style>
