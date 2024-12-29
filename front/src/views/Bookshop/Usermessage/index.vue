@@ -11,6 +11,9 @@
         <div>
           <strong>消息：</strong> {{ message.message }}
         </div>
+        <div>
+          <button class="delete-btn" @click="deleteUserMessage( message.Uno)">删除留言</button>
+        </div>
         <hr />
       </div>
         </div>
@@ -52,10 +55,10 @@
 
   const deleteUserMessage = (Uno) => {
     let formData = new FormData();
-    FormData.append('Uno', Uno );
+    formData.append('Uno', Uno );
     axios({
     method: 'post',
-    url: `${store.ip}/api/getMsg`,
+    url: `${store.ip}/api/deleteMsg`,
     data: formData,
     headers: { 'Content-Type': 'multipart/form-data' },
   })
@@ -69,6 +72,7 @@
           grouping: true,
         });
       } else {
+        // alert(responseData.ret);
         getUserMessage();
       }
     })
