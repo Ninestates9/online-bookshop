@@ -42,6 +42,17 @@ export default {
 </script>
 
 <template>
-  <!-- 将 ref 绑定到 div -->
-  <div ref="vantaRef" style="width: 100%; height: 100vh"></div>
+    <!-- 设置覆盖背景的容器 -->
+    <div ref="vantaRef" class="vanta-background"></div>
 </template>
+  
+<style scoped>
+  .vanta-background {
+    position: absolute; /* 让背景定位相对于父级元素 */
+    top: 0;
+    left: 0;
+    width: 100%; /* 覆盖整个父级元素 */
+    height: 100%; /* 覆盖整个父级元素 */
+    z-index: -1; /* 将背景放在内容后面 */
+  }
+</style>
