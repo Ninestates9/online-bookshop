@@ -6,30 +6,33 @@
     <div class="history">
       <!-- 使用 v-for 显示历史订单 -->
       <div v-for="(order, index) in orders" :key="index" class="order-item">
-        <div class="order-header">
-          <span>订单时间: {{ order.orderTime }}</span>
-          <span>订单状态: {{ order.state }}</span>
-        </div>
+        <el-descriptions :border="true" column="2" class="order-header">
+          <el-descriptions-item label="订单时间">{{ order.orderTime }}</el-descriptions-item>
+          <el-descriptions-item label="订单状态">{{ order.state }}</el-descriptions-item>
+          <el-descriptions-item label="总金额">¥{{ order.totalMoney }}</el-descriptions-item>
+          <el-descriptions-item label="优惠金额"> ¥{{ order.discountMoney }}</el-descriptions-item>
+          <el-descriptions-item label="收货地址"> {{ order.deliveryAddress }}</el-descriptions-item>
+        </el-descriptions>
         <div class="order-details">
           <div>
-            <strong>书籍列表:</strong>
-            <ul>
-              <li v-for="(book, bookIndex) in order.books" :key="bookIndex">
-                <div>
-                  <strong>{{ book.Bname }}</strong>
-                  <p>作者: {{ book.authors.join(', ') }}</p>
-                  <p>出版社: {{ book.press }}</p>
-                  <p>单价: ¥{{ book.price }}</p>
-                  <p>购买数量: {{ book.orderNumber }}</p>
-                  <p>总价: ¥{{ book.total }}</p>
-                </div>
-              </li>
-            </ul>
+            <div class="demo-collapse">
+    <el-collapse v-model="activeNames" @change="handleChange">
+      <el-collapse-item title="书籍列表" name="1">
+        <el-table :data="order.books" border>
+            <el-table-column prop="Bname" label="书名" />
+            <el-table-column prop="authors" label="作者" :formatter="formatAuthors" />
+            <el-table-column prop="press" label="出版社" />
+            <el-table-column prop="price" label="单价" :formatter="formatPrice" />
+            <el-table-column prop="orderNumber" label="购买数量" />
+            <el-table-column prop="total" label="总价" :formatter="formatPrice" />
+          </el-table>
+      </el-collapse-item>
+      </el-collapse>
+    </div>
+            
           </div>
           <div>
-            <p>总金额: ¥{{ order.totalMoney }}</p>
-            <p>优惠金额: ¥{{ order.discountMoney }}</p>
-            <p>收货地址: {{ order.deliveryAddress }}</p>
+
           </div>
         </div>
       </div>
