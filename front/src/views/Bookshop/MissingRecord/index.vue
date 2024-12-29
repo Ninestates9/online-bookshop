@@ -8,14 +8,15 @@
       <div v-if="shortageSet.length > 0" class="order-list">
         <div v-for="(order, index) in shortageSet" :key="index" class="order-item">
           <el-checkbox v-model="selectedOrders" :label="order.Sno">
-            <p><strong>订单号:</strong> {{ order.Sno }}</p>
-            <p><strong>书号:</strong> {{ order.Bno }}</p>
-            <p><strong>丛书号:</strong> {{ order.Bsubno }}</p>
-            <p><strong>书名:</strong> {{ order.Bname }}</p>
-            <p><strong>用户编号:</strong> {{ order.Uno }}</p>
-            <p><strong>缺货数量:</strong> {{ order.insufficientNumber }}</p>
-            <p><strong>缺货时间:</strong> {{ order.time }}</p>
-            <hr />
+            <el-descriptions :border="true"  column="3" >
+            <el-descriptions-item label="订单号" label-width="100px">{{ order.Sno }}</el-descriptions-item>
+            <el-descriptions-item label="书号">{{ order.Bno }}</el-descriptions-item>
+            <el-descriptions-item label="丛书号">{{ order.Bsubno }}</el-descriptions-item>
+            <el-descriptions-item label="书名">{{ order.Bname }}</el-descriptions-item>
+            <el-descriptions-item label="用户编号">{{ order.Uno }}</el-descriptions-item>
+            <el-descriptions-item label="缺货数量">{{ order.insufficientNumber }}</el-descriptions-item>
+            <el-descriptions-item label="缺货时间">{{ order.time }}</el-descriptions-item>
+        </el-descriptions>
           </el-checkbox>
         </div>
       </div>

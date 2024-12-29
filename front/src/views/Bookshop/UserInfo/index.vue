@@ -5,26 +5,16 @@
     </div>
     <div class="userinfo">
       <div v-for="user in users" :key="user.Uno" class="user-info">
-        <div>
-          <strong>账号:</strong> {{ user.Uno }}
-        </div>
-        <div>
-          <strong>昵称:</strong> {{ user.Uname }}
-        </div>
-        <div>
-          <strong>信用等级:</strong> {{ user.level }}
-          <button @click="openDialog(user)">修改信用等级</button>
-        </div>
-        <div>
-          <strong>地址:</strong> {{ user.address }}
-        </div>
-        <div>
-          <strong>余额:</strong> ¥{{ user.balance }}
-        </div>
-        <div>
-          <strong>消费数额:</strong> ¥{{ user.total }}
-        </div>
-        <hr />
+
+        <el-descriptions :border="true"  column="1" >
+            <el-descriptions-item label="账号" label-width="100px">{{ user.Uno }}</el-descriptions-item>
+            <el-descriptions-item label="昵称">{{ user.Uname }}</el-descriptions-item>
+            <el-descriptions-item label="地址">{{ user.address }}</el-descriptions-item>
+            <el-descriptions-item label="余额">{{ user.balance }}</el-descriptions-item>
+            <el-descriptions-item label="消费数额">{{ user.total }}</el-descriptions-item>
+            <el-descriptions-item label="信用等级">{{ user.level }}</el-descriptions-item>
+        </el-descriptions>
+        <button @click="openDialog(user)">修改信用等级</button>
       </div>
     </div>
 

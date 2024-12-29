@@ -5,23 +5,36 @@
     </div>
     <div class="history-order">
       <div v-if="orders.length > 0" class="order-list">
+
         <div v-for="(order, index) in orders" :key="index" class="order-item">
-          <h4>订单号: {{ order.Ono }}</h4>
-          <p><strong>总金额:</strong> ¥{{ order.totalMoney }}</p>
-          <p><strong>优惠金额:</strong> ¥{{ order.discountMoney }}</p>
-          <p><strong>送货地址:</strong> {{ order.deliveryAddress }}</p>
-          <p><strong>订单状态:</strong> {{ order.state }}</p>
-          <p><strong>下单时间:</strong> {{ order.orderTime }}</p>
-          <h5>书籍列表:</h5>
-          <div class="books-list">
-            <div v-for="(book, bookIndex) in order.books" :key="bookIndex" class="book-item">
-              <p><strong>书名:</strong> {{ book.Bname }}</p>
-              <p><strong>作者:</strong> {{ book.authors.join(', ') }}</p>
-              <p><strong>出版社:</strong> {{ book.press }}</p>
-              <p><strong>单价:</strong> ¥{{ book.price }}</p>
-              <p><strong>订购数量:</strong> {{ book.orderNumber }}</p>
-              <p><strong>总价:</strong> ¥{{ book.total }}</p>
-              <hr />
+          <el-descriptions :border="true" column="2" class="order-header">
+            <el-descriptions-item label="订单号">{{ order.Ono }}</el-descriptions-item>
+            <el-descriptions-item label="总金额">{{ order.totalMoney }}</el-descriptions-item>
+            <el-descriptions-item label="优惠金额">¥{{ order.discountMoney }}</el-descriptions-item>
+            <el-descriptions-item label="订单状态"> ¥{{ order.state }}</el-descriptions-item>
+            <el-descriptions-item label="下单时间"> {{ order.orderTime }}</el-descriptions-item>
+            <el-descriptions-item label="送货地址"> {{ order.deliveryAddress }}</el-descriptions-item>
+          </el-descriptions>
+          <div class="order-details">
+            <div>
+              <div class="demo-collapse">
+                <el-collapse v-model="activeNames" @change="handleChange">
+                  <el-collapse-item title="书籍列表" name="1">
+                    <el-table :data="order.books" border>
+                      <el-table-column prop="Bname" label="书名" />
+                      <el-table-column prop="authors" label="作者" :formatter="formatAuthors" />
+                      <el-table-column prop="press" label="出版社" />
+                      <el-table-column prop="price" label="单价" :formatter="formatPrice" />
+                      <el-table-column prop="orderNumber" label="购买数量" />
+                      <el-table-column prop="total" label="总价" :formatter="formatPrice" />
+                    </el-table>
+                  </el-collapse-item>
+                </el-collapse>
+              </div>
+
+            </div>
+            <div>
+
             </div>
           </div>
           <div class="order-actions">
@@ -30,7 +43,6 @@
             <!-- Arrive Button -->
             <el-button type="primary" @click="arriveOrder(order.Ono)">到货</el-button>
           </div>
-          <hr />
         </div>
       </div>
       <div v-else>

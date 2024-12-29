@@ -5,19 +5,30 @@
         </div>
         <div class="Provider">
             <button @click="dialogVisible = true">添加供应商</button>
-            <div v-for="(vendor, index) in provider" :key="vendor.Vno" class="vendor-item">
-                <h4>{{ vendor.Vname }}</h4>
-                <p>地址: {{ vendor.Vaddress }}</p>
-                <h5>供应的书籍:</h5>
-                <ul>
-                    <li v-for="book in vendor.books" :key="book.Bno">
-                        {{ book.Bname }} (书号: {{ book.Bno }}, 丛书号: {{ book.Bsubno }}, 状态: {{ book.state }})
-                    </li>
-                </ul>
+            <div v-for="(vendor, index) in provider" :key="vendor.Vno"  class="vendor-item">
+                <!-- Vendor Information -->
+                <el-descriptions :border="true" column="2" class="order-header">
+                    <el-descriptions-item label="供应商名称">{{ vendor.Vname }}</el-descriptions-item>
+                    <el-descriptions-item label="供应商地址">{{ vendor.Vaddress }}</el-descriptions-item>
+                </el-descriptions>
+                
+                <!-- Collapse Section for Books -->
+                <div class="demo-collapse">
+                    <el-collapse v-model="vendor.activeNames" @change="handleChange"  >
+                        <el-collapse-item title="供应的书籍" name="1">
+                            <el-table :data="vendor.books" border>
+                                <el-table-column prop="Bname" label="书名" />
+                                <el-table-column prop="Bno" label="书号" />
+                                <el-table-column prop="Bsubno" label="丛书号" />
+                                <el-table-column prop="state" label="供应状态" />
+                            </el-table>
+                        </el-collapse-item>
+                    </el-collapse>
+                </div>
             </div>
         </div>
 
-        <!-- 对话框 -->
+        <!-- Dialog to add a new vendor -->
         <el-dialog :model-value="dialogVisible" title="添加供应商">
             <el-form :model="newVendor">
                 <el-form-item label="供应商名称" required>
@@ -33,7 +44,7 @@
                     <el-button @click="addBook">添加书籍</el-button>
                     <ul>
                         <li v-for="(book, index) in newVendor.books" :key="index">
-                         书号: {{ book.Bno }}, 丛书号: {{ book.Bsubno }}, 状态: {{ book.state }}
+                            书号: {{ book.Bno }}, 丛书号: {{ book.Bsubno }}, 状态: {{ book.state }}
                             <el-button @click="removeBook(index)">删除</el-button>
                         </li>
                     </ul>
@@ -58,6 +69,7 @@ const provider = ref([]);
 const dialogVisible = ref(false);
 const newVendor = ref({ Vname: '', Vaddress: '', books: [] });
 const newBook = ref({ Bname: '', Bno: '', Bsubno: 0, state: '' });
+const activeNames = ref([]);
 
 const getProvider = () => {
     axios.post(`${store.ip}/api/getVendors`, { headers: { 'Content-Type': 'multipart/form-data' } })
@@ -66,6 +78,9 @@ const getProvider = () => {
                 provider.value = response.data.vendors || [];
             } else {
                 ElMessage.error(response.data.msg);
+                provider.value.forEach(vendor => {
+                    vendor.activeNames = []; // 默认没有展开
+                });
             }
         })
         .catch(error => {
@@ -118,6 +133,10 @@ const resetBook = () => {
     newBook.value = { Bname: '', Bno: '', Bsubno: 0, state: '' };
 }
 
+const handleChange = (newActiveNames) => {
+    activeNames.value = newActiveNames;
+}
+
 onMounted(() => {
     getProvider();
 });
@@ -156,16 +175,13 @@ onMounted(() => {
     font-size: 18px;
     text-align: left;
     overflow-y: auto;
-    /* 确保文本左对齐 */
 }
-
 
 button {
     margin-left: 10px;
+    background-color: aqua;
 }
-button {
-  background-color: aqua;
-}
+
 .vendor-item {
     margin-bottom: 20px;
     padding: 10px;
@@ -191,5 +207,9 @@ button {
 
 .vendor-item li {
     margin: 5px 0;
+}
+
+.dialog-footer {
+    text-align: right;
 }
 </style>
