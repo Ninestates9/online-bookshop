@@ -2,7 +2,7 @@
   <div class="rightmain">
     <div class="righttop">
       <div class="mt-4">
-        <el-input v-model="searchInput" style="max-width: 600px" placeholder="请输入搜索内容" class="input-with-select">
+        <el-input v-model="searchInput" placeholder="请输入搜索内容" class="input-with-select">
           <template #prepend>
             <el-select v-model="store.searchOP" placeholder="类型" style="width: 115px">
               <el-option label="书号" value=" Bno" />
@@ -22,6 +22,7 @@
       </div>
     </div>
     <div class="bookbrowser">
+      <vanta-birds />
       <el-card @click="openPurchaseModal(book)" v-for="book in books" :key="book.Bno" class="book-card">
         <img :src="store.ip + '/cover/' + book.cover" alt="书本封面" class="book-cover" />
         <div class="book-info">
@@ -67,6 +68,7 @@ import { mainStore } from '../../../store/index.ts';
 import { ElCard, ElRow, ElCol, ElMessage } from 'element-plus';
 import axios from 'axios';
 import { Search } from '@element-plus/icons-vue'
+import VantaBirds from '../../VantaBirds.vue';
 // 初始化 Pinia store
 const store = mainStore();
 const searchInput = ref(''); // 搜索输入框绑定的值
@@ -85,6 +87,7 @@ const searchOptions = [
 ];
 
 const selectedOption = ref('Bno'); // 默认选中的值
+
 
 const openPurchaseModal = (book) => {
   selectedBook.value = {
@@ -174,11 +177,14 @@ const getBookBrowser = () => {
 .righttop {
   position: relative;
   overflow: hidden;
-  background-color: rgba(91, 247, 1, 0.421);
   width: 100%;
   height: 100%;
 }
 
+.input-with-select {
+    max-width: 600px;
+    margin-top: 5%;
+}
 
 .searchbox {
   position: relative;
@@ -229,7 +235,6 @@ const getBookBrowser = () => {
   /* 允许换行 */
   justify-content: flex-start;
   /* 左对齐 */
-  background-color: rgba(233, 58, 5, 0.421);
   width: 100%;
   /* 确保容器宽度为 100% */
   padding: 10px;
