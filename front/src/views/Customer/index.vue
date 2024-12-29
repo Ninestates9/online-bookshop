@@ -1,31 +1,46 @@
 <template>
   <div class="CustomerMain">
-    <div class="leftmain">
-      <div class="lefttop">
-        <img :src="misakaImg" alt="Misaka Mikoto" />
-        <strong>{{ store.username }}</strong>
-      </div>
-      <div class="leftlist">
-        <button id="BookBrowser" class="leftbtn" @click="navigateTo('BookBrowser')">首页</button>
-        <button id="CustomerInfo" class="leftbtn" @click="navigateTo('CustomerInfo')">用户信息</button>
-        <button id="Cart" class="leftbtn" @click="navigateTo('Cart')">购物车</button>
-        <button id="History" class="leftbtn" @click="navigateTo('History')">历史订单</button>
-        <button id="Message" class="leftbtn" @click="showDialog()">留言</button>
-        <button id="logout" class="leftbtn" @click="logout()">注销</button>
-      </div>
-    </div>
-    <div class="rightmain">
-      <router-view></router-view>
-      <el-dialog title="留言" :model-value="dialogVisible" @close="resetMessage">
-        <div>
-          <el-input type="textarea" v-model="message" placeholder="请输入您的留言" rows="4"></el-input>
+    <el-container>
+      <el-aside width="300px">
+        <div class="lefttop">
+          <el-avatar size="large" :src="misakaImg" alt="Misaka Mikoto" fit="cover" />
+          <av>{{ store.username }}</av>
         </div>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="sendMessage()">确 定</el-button>
-        </span>
-      </el-dialog>
-    </div>
+        <el-menu default-active="2" class="el-menu-vertical-demo">
+          <el-menu-item index="1" @click="navigateTo('BookBrowser')">
+            <el-icon ><icon-menu /></el-icon>
+            <span id="BookBrowser">搜索书籍</span>
+          </el-menu-item>
+          <el-menu-item index="2" @click="navigateTo('CustomerInfo')">
+            <el-icon ><icon-menu /></el-icon>
+            <span id="CustomerInfo">用户信息</span>
+          </el-menu-item>
+          <el-menu-item index="3" @click="navigateTo('Cart')">
+            <el-icon><document /></el-icon>
+            <span id="Cart" >购物车</span>
+          </el-menu-item>
+          <el-menu-item index="4" @click="navigateTo('History')">
+            <el-icon ><setting /></el-icon>
+              <span id="History">历史订单</span>
+          </el-menu-item>
+          <el-menu-item index="5" @click="showDialog()">
+            <el-icon><setting /></el-icon>
+            <span id="Message" >留言</span>
+          </el-menu-item>
+          <el-menu-item index="6" @click="logout()">
+            <el-icon ><setting /></el-icon>
+            <span id="logout">注销</span>
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
+
+      <el-container>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
+        <el-footer>&copy; 2025 Online-bookshop. All rights reserved.</el-footer>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
@@ -178,6 +193,13 @@ onMounted(() => {
   }
   getCartBook();
 });
+
+import {
+  Document,
+  Menu as IconMenu,
+  Location,
+  Setting,
+} from '@element-plus/icons-vue'
 </script>
 
 <style>
@@ -188,8 +210,8 @@ onMounted(() => {
   width: 100vw;
   /* 修正为 100vw */
   height: 98.5vh;
-  display: grid;
-  grid-template-columns: 25% 75%;
+  /* display: grid;
+  grid-template-columns: 25% 75%; */
 }
 
 .leftmain {
@@ -206,19 +228,17 @@ onMounted(() => {
   position: relative;
   display: flex;
   align-items: center;
-  background-color: rgba(79, 0, 250, 0.421);
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  background-color: rgba(255, 255, 255, 0.421);
+
 }
 
-.lefttop strong {
+/* .lefttop strong {
   position: relative;
   display: flex;
   font-size: 20pt;
   margin-left: 10px;
   overflow: hidden;
-}
+} */
 
 .lefttop img {
   padding-left: 3%;
@@ -253,5 +273,10 @@ onMounted(() => {
   overflow: hidden;
   display: grid;
   grid-template-rows: 15% 85%;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
 }
 </style>

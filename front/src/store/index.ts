@@ -10,7 +10,7 @@ export const mainStore = defineStore('main', {
     password:'password',
     balance:100000,
     usermessage:'嘻嘻',
-    searchOP:'Bno',
+    searchOP:null,
     ip:'http://10.19.131.1:5000',
     userlevel:5,
     total:0,

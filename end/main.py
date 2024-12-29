@@ -254,6 +254,8 @@ def searchBooks():
     books = []
     conn, cursor = connectSQL()
     type = request.form.get("type")
+    if type == 'null':
+        return jsonify({"ret":1, "msg":"未选择类型！"})
     content = request.form.get("content")
     if content[0] == '!':
         if type == "Bno":
@@ -676,11 +678,11 @@ def getVendors():
     result = cursor.fetchall()
     for row in result:
         books = []
-        sql = f"select Bno, Bsubno, state from supply where Vno = {row[0]};"
+        sql = f"select Bno, Bsubno, Vstate from supply where Vno = {row[0]};"
         cursor.execute(sql)
         res = cursor.fetchall()
         for item in res:
-            sql = f"select Bname where Bno = '{item[0]}' and Bsubno = {item[1]};"
+            sql = f"select Bname from book where Bno = '{item[0]}' and Bsubno = {item[1]};"
             cursor.execute(sql)
             Bname = cursor.fetchall()[0]
             book = {"Bno":item[0], "Bsubno":item[1], "Bname":Bname, "state":item[2]}
@@ -704,7 +706,7 @@ def addVendor():
     cursor.execute(sql)
     Vno = cursor.fetchone()[0]
     for book in books:
-        sql = f"insert into supply values('{book[0]}', {book[1]}, {Vno}, '{book[2]}');"
+        sql = f'''insert into supply values('{book["Bno"]}', {book["Bsubno"]}, {Vno}, '{book["state"]}');'''
         cursor.execute(sql)
     data = {"ret":0}
     closeSQL(conn, cursor)
