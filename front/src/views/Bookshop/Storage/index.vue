@@ -322,6 +322,7 @@ onMounted(() => {
 .book-card {
     background: white; /* 卡片背景 */
     border-radius: 8px; /* 圆角 */
+    color: black;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 卡片阴影 */
     padding: 15px; /* 内边距 */
     display: flex; /* 使内容垂直排列 */
