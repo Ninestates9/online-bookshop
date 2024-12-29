@@ -4,30 +4,48 @@
             <h3 class="topinfo">库存</h3>
         </div>
         <div class="storage">
-            <div v-for="(book, index) in storageItems" :key="book.Bno" class="storage-item">
-                <div class="book-card">
-                    <img :src="`${store.ip}/cover/${book.cover}`" alt="书本封面" class="book-cover" />
-                    <div class="book-details">
-                        <h4>{{ book.Bname }}</h4>
-                        <p>书号: {{ book.Bno }}</p>
-                        <p>丛书号: {{ book.Bsubno }}</p>
-                        <p>作者: {{ book.authors.join(', ') }}</p>
-                        <p>关键字: {{ book.keys.join(', ') }}</p>
-                        <p>出版社: {{ book.press }}</p>
-                        <div class="price-control">
-                            <label>价格: ¥</label>
-                            <input type="number" v-model.number="book.price" min="0" />
-                            <el-button size="small" @click="updatePrice(book)">更新价格</el-button>
-                        </div>
-                        <p>库存量: {{ book.quantity }}</p>
-                        <p>目录: {{ book.catalog }}</p>
-                        <p>位置: {{ book.position }}</p>
-                    </div>
-                    <button @click="deleteBook(book.Bno, book.Bsubno)" class="deleteBtn">删除图书</button>
+            <el-card @click="openPurchaseModal(book)" v-for="(book, index) in storageItems" :key="book.Bno"
+                class="book-card">
+                <img :src="`${store.ip}/cover/${book.cover}`" alt="书本封面" class="book-cover" />
+                <div class="book-details">
+                    <p style="font-weight: bold;">{{ book.Bname }}</p>
+                    <p>作者: {{ book.authors.join('  ') }}</p>
+                    <p>出版社: {{ book.press }}</p>
+                    <p>价格: {{ book.price}}</p>
+                    <p>库存量: {{ book.quantity }}</p>
+
                 </div>
-            </div>
+            </el-card>
+            <el-dialog v-model="isModalOpen" title="书籍详情">
+                <el-descriptions :border="true" column="3">
+                    <el-descriptions-item :rowspan="5" :width="200" label="" label-width="0px" align="center">
+                        <img :src="store.ip + '/cover/' + selectedBook?.cover" alt="书本封面" class="book-cover" />
+                    </el-descriptions-item>
+                    <el-descriptions-item label="书号"> {{ selectedBook?.Bno }}</el-descriptions-item>
+                    <el-descriptions-item label="丛书号">{{ selectedBook?.Bsubno }}</el-descriptions-item>
+                    <el-descriptions-item label="书名">{{ selectedBook?.Bname }}</el-descriptions-item>
+                    <el-descriptions-item label="作者">{{ selectedBook?.authors.join(' ') }}</el-descriptions-item>
+                    <el-descriptions-item label="关键字">{{ selectedBook?.keys.join(' ') }}</el-descriptions-item>
+                    <el-descriptions-item label="出版社">{{ selectedBook?.press }}</el-descriptions-item>
+                    <el-descriptions-item label="库存">{{ selectedBook?.quantity }}</el-descriptions-item>
+                    <el-descriptions-item label="位置"> {{ selectedBook?.position }}</el-descriptions-item>
+                    <el-descriptions-item label="目录">{{ selectedBook?.catalog }}</el-descriptions-item>
+
+
+                </el-descriptions>
+                <template #footer>
+                    <div class="price-control">
+                    <label>价格: ¥</label>
+                    <input type="number" v-model.number="selectedBook.price" min="0" />
+                    <el-button size="small" @click="updatePrice(selectedBook)">更新价格</el-button>
+                </div>
+                    <el-button @click="isModalOpen = false">关闭</el-button>
+                    <el-button @click="deleteBook(selectedBook.Bno, selectedBook.Bsubno)" class="deleteBtn">删除图书</el-button>
+
+                </template>
+            </el-dialog>
         </div>
-        
+
         <!-- 添加书目按钮 -->
         <div class="add-button-container">
             <el-button type="primary" @click="showDialog">添加书目</el-button>
@@ -94,13 +112,14 @@
 import { ref, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
-import { ElMessage } from 'element-plus';
+import { ElCard, ElRow, ElCol, ElMessage } from 'element-plus';
 
 const store = mainStore();
 
 // 存储书籍数据
 const storageItems = ref([]);
-
+const isModalOpen = ref(false);
+const selectedBook = ref(null);
 // 新书籍的信息
 const newBook = ref({
     Bno: '',
@@ -118,7 +137,22 @@ const newBook = ref({
 
 // 控制对话框的可见性
 const dialogVisible = ref(false);
-
+const openPurchaseModal = (book) => {
+    selectedBook.value = {
+        Bno: book.Bno,
+        Bsubno: book.Bsubno,
+        Bname: book.Bname,
+        authors: book.authors,
+        press: book.press,
+        price: book.price,
+        quantity: book.quantity,
+        cover: book.cover, // Include the cover image for detail view
+        keys: book.keys,
+        catalog: book.catalog,
+        position: book.position,
+    };
+    isModalOpen.value = true;
+};
 // 显示对话框
 const showDialog = () => {
     dialogVisible.value = true;
@@ -126,29 +160,29 @@ const showDialog = () => {
 
 const deleteBook = (Bno, Bsubno) => {
     let formData = new FormData();
-    formData.append('Bno', Bno );
+    formData.append('Bno', Bno);
     formData.append('Bsubno', Bsubno);
     axios({
-    method: 'post',
-    url: `${store.ip}/api/deleteBook`,
-    data: formData,
-    headers: { 'Content-Type': 'multipart/form-data' },
-  })
-    .then((response) => {
-      const responseData = response.data;
-      if (responseData.ret === 1) {
-        ElMessage({
-          message: responseData.msg,
-          type: 'error',
-          duration: 5 * 1000,
-          grouping: true,
-        });
-      } else {
-        // alert(responseData.ret);
-        getBooks();
-      }
+        method: 'post',
+        url: `${store.ip}/api/deleteBook`,
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' },
     })
-  }
+        .then((response) => {
+            const responseData = response.data;
+            if (responseData.ret === 1) {
+                ElMessage({
+                    message: responseData.msg,
+                    type: 'error',
+                    duration: 5 * 1000,
+                    grouping: true,
+                });
+            } else {
+                // alert(responseData.ret);
+                getBooks();
+            }
+        })
+}
 
 // 更新价格
 const updatePrice = async (book) => {
@@ -291,51 +325,60 @@ onMounted(() => {
 
 <style scoped>
 .rightmain {
-  position: relative;
-  display: grid;
-  height: 98.5vh;
-  width: 100%;
-  grid-template-rows: 15% 77% 8%;
+    position: relative;
+    display: grid;
+    height: 98.5vh;
+    width: 100%;
+    grid-template-rows: 15% 77% 8%;
 }
 
 .righttop {
-  position: relative;
-  overflow: hidden;
-  background-color: rgba(91, 247, 1, 0.421);
-  width: 100%;
-  height: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(91, 247, 1, 0.421);
+    width: 100%;
+    height: 100%;
 }
 
 .storage {
     padding: 20px;
     display: flex;
-    flex-wrap: wrap; /* 允许换行 */
-    gap: 20px; /* 卡片之间的间距 */
+    flex-wrap: wrap;
+    /* 允许换行 */
+    gap: 20px;
+    /* 卡片之间的间距 */
     overflow-y: auto;
 }
 
-.storage-item {
-    flex: 1 1 calc(33.33% - 20px); /* 每个卡片占据三分之一的宽度，减去间距 */
-    max-width: calc(33.33% - 20px); /* 限制最大宽度 */
-}
+
 
 .book-card {
-    background: white; /* 卡片背景 */
-    border-radius: 8px; /* 圆角 */
-    color: black;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 卡片阴影 */
-    padding: 15px; /* 内边距 */
-    display: flex; /* 使内容垂直排列 */
-    flex-direction: column; /* 垂直排列内容 */
-    height: 100%; /* 确保卡片高度一致 */
+  flex: 0 1 calc(23% - 8px);
+  /* 每个卡片占据三分之一的宽度，减去边距 */
+  display: flex;
+  flex-direction: column;
+  /* 垂直排列内容 */
+  justify-content: space-between;
+  /* 内容均匀分布 */
+  height: 450px;
+  /* 固定高度 */
+  margin: 5px;
+  /* 卡片之间的间距 */
+  border-radius: 8px;
+  /* 圆角 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  /* 阴影效果 */
+  box-sizing: border-box;
+  /* 包含边距和填充在宽高内 */
 }
 
 .book-cover {
-    width: 100%; /* 充满宽度 */
-    height: auto; /* 自适应高度 */
-    max-height: 150px; /* 限制最大高度 */
-    object-fit: cover; /* 保持比例 */
-    margin-bottom: 10px; /* 下边距 */
+  width: 100%;
+  /* 充满宽度 */
+  height: 300px;
+  /* 固定高度 */
+  object-fit: cover;
+  /* 保持比例并覆盖 */
 }
 
 .price-control {
@@ -351,20 +394,32 @@ onMounted(() => {
 }
 
 .book-details {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+  display: flex;
+  /* 使用 flexbox 进行布局 */
+  flex-wrap: wrap;
+  /* 允许换行 */
+
+  justify-content: flex-start;
+  line-height: 0px;
 }
 
 .book-details p {
-    margin: 0; /* 清除默认段落间距 */
+  margin-left: 10px;
+  /* 每个属性之间的间距 */
 }
+
 .add-button-container {
-    padding: 20px; /* 添加适当的内边距 */
-    text-align: center; /* 按钮居中 */
+    padding: 20px;
+    /* 添加适当的内边距 */
+    text-align: center;
+    /* 按钮居中 */
 }
 
 .upload-demo {
     margin-bottom: 20px;
+}
+
+button {
+    background-color: aqua;
 }
 </style>
