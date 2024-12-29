@@ -16,9 +16,9 @@
         <div class="order-details">
           <div>
             <div class="demo-collapse">
-    <el-collapse v-model="activeNames" @change="handleChange">
-      <el-collapse-item title="书籍列表" name="1">
-        <el-table :data="order.books" border>
+    <el-collapse v-model="activeNames" @change="handleChange" class="board">
+      <el-collapse-item title="书籍列表" name="1" class="booklist">
+        <el-table :data="order.books" border class="book-table">
             <el-table-column prop="Bname" label="书名" />
             <el-table-column prop="authors" label="作者" :formatter="formatAuthors" />
             <el-table-column prop="press" label="出版社" />
@@ -102,6 +102,7 @@ onMounted(() => {
   display: grid;
   grid-template-rows: 15% 85%;
   height: 98.5vh;
+  background-color: white;
 }
 
 .righttop {
@@ -119,40 +120,32 @@ onMounted(() => {
 }
 
 .history {
-  padding: 20px;
   font-size: 18px;
-  text-align: left;
+  text-align: center;
   overflow-y: auto;
 }
 
 .order-item {
-  border-bottom: 1px solid #ddd;
-  padding: 15px 0;
+  padding-top: 20px;
 }
 
 .order-header {
-  font-weight: bold;
-  margin-bottom: 10px;
+  width: 90%;
+  padding: 0px;
+  margin-left: 20px;
+
+}
+ .board {
+  border-color: rgba(0, 0, 0, 0)
+ }
+
+.booklist {
+  width: 90%;
+  margin-left: 10px;
 }
 
-.order-details {
-  margin-top: 10px;
-}
-
-.order-details div {
-  margin-bottom: 10px;
-}
-
-.order-details ul {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.order-details li {
-  margin-bottom: 10px;
-}
-
-.order-details strong {
-  font-size: 18px;
+.book-table {
+  width: 100%;
+  margin-left: 20px;
 }
 </style>
