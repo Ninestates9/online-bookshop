@@ -1,45 +1,43 @@
 <template>
   <div class="CustomerMain">
     <el-container>
-      <el-aside width="300px">
+      <el-aside width="20%">
         <div class="lefttop">
-          <el-avatar size="large" :src="misakaImg" alt="Misaka Mikoto" fit="cover" />
-          <av>{{ store.username }}</av>
+          <el-avatar class="av" shape="square" :size="100" :src="misakaImg" alt="Misaka Mikoto" fit="cover" />
+          <h2 class="username">{{ store.username }}</h2>
         </div>
         <el-menu default-active="2" class="el-menu-vertical-demo">
           <el-menu-item index="1" @click="navigateTo('BookBrowser')">
-            <el-icon ><icon-menu /></el-icon>
+            <el-icon><Search /></el-icon>
             <span id="BookBrowser">搜索书籍</span>
           </el-menu-item>
           <el-menu-item index="2" @click="navigateTo('CustomerInfo')">
-            <el-icon ><icon-menu /></el-icon>
+            <el-icon><User /></el-icon>
             <span id="CustomerInfo">用户信息</span>
           </el-menu-item>
           <el-menu-item index="3" @click="navigateTo('Cart')">
-            <el-icon><document /></el-icon>
+            <el-icon><ShoppingTrolley /></el-icon>
             <span id="Cart" >购物车</span>
           </el-menu-item>
           <el-menu-item index="4" @click="navigateTo('History')">
-            <el-icon ><setting /></el-icon>
+            <el-icon><Tickets /></el-icon>
               <span id="History">历史订单</span>
           </el-menu-item>
           <el-menu-item index="5" @click="showDialog()">
-            <el-icon><setting /></el-icon>
+            <el-icon><Message /></el-icon>
             <span id="Message" >留言</span>
           </el-menu-item>
           <el-menu-item index="6" @click="logout()">
-            <el-icon ><setting /></el-icon>
-            <span id="logout">注销</span>
+            <el-icon><SwitchButton /></el-icon>
+            <span id="logout" style="color: red;">注销</span>
           </el-menu-item>
         </el-menu>
+        <el-footer>&copy; 2025 Online-bookshop. All rights reserved.</el-footer>
       </el-aside>
 
-      <el-container>
-        <el-main>
-          <router-view></router-view>
-        </el-main>
-        <el-footer>&copy; 2025 Online-bookshop. All rights reserved.</el-footer>
-      </el-container>
+      <el-main width="80%" height="100%">
+        <router-view></router-view>
+      </el-main>        
     </el-container>
   </div>
 </template>
@@ -207,62 +205,20 @@ import {
   left: 0%;
   top: 0%;
   position: absolute;
-  width: 100vw;
-  /* 修正为 100vw */
-  height: 98.5vh;
-  /* display: grid;
-  grid-template-columns: 25% 75%; */
-}
-
-.leftmain {
-  position: relative;
-  display: flex;
-  background-color: rgba(255, 255, 255, 0);
-  height: 98.5vh;
   width: 100%;
-  display: grid;
-  grid-template-rows: 15% 85%;
+  height: 100%;
+  overflow: hidden;
 }
 
 .lefttop {
+  padding: 10%;
   position: relative;
   display: flex;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.421);
-
 }
 
-/* .lefttop strong {
-  position: relative;
-  display: flex;
-  font-size: 20pt;
-  margin-left: 10px;
-  overflow: hidden;
-} */
-
-.lefttop img {
-  padding-left: 3%;
-  height: 80%;
-  border-radius: 10px;
-}
-
-.leftlist {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color: rgba(5, 229, 222, 0.421);
-  width: 100%;
-  height: 100%;
-  flex-direction: column
-}
-
-.leftbtn {
-  background-color: rgba(163, 43, 218, 0.5);
-  color: white;
-  border: 1.5px solid rgba(176, 185, 15, 0.5);
-  width: 100%;
-  border-radius: 0px;
-  margin-left: 0px;
+.username {
+  margin-left: 10%;
 }
 
 .rightmain {
@@ -275,8 +231,14 @@ import {
   grid-template-rows: 15% 85%;
 }
 
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
+.el-menu-vertical-demo span {
+  font-size: 20px;
+}
+
+.el-menu-vertical-demo {
+  width: 100%;
+  height: 70%;
   min-height: 400px;
+  padding: 5%;
 }
 </style>
