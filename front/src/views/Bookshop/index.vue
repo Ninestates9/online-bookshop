@@ -12,6 +12,7 @@
                 <button id="UserInfo" class="leftbtn" @click="navigateTo('UserInfo')">修改用户信息</button>
                 <button id="MissingRecord" class="leftbtn" @click="navigateTo('MissingRecord')">缺书记录</button>
                 <button id="MissingRecord" class="leftbtn" @click="navigateTo('Purchase')">采购单</button>
+                <button id="MissingRecord" class="leftbtn" @click="navigateTo('Provider')">供应商</button>
                 <button id="logout" class="leftbtn" @click="logout()">注销</button>
             </div>
         </div>

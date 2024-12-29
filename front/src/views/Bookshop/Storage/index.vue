@@ -23,6 +23,7 @@
                         <p>目录: {{ book.catalog }}</p>
                         <p>位置: {{ book.position }}</p>
                     </div>
+                    <button @click="deleteBook(book.Bno, book.Bsubno)" class="deleteBtn">删除图书</button>
                 </div>
             </div>
         </div>
@@ -122,6 +123,32 @@ const dialogVisible = ref(false);
 const showDialog = () => {
     dialogVisible.value = true;
 };
+
+const deleteBook = (Bno, Bsubno) => {
+    let formData = new FormData();
+    formData.append('Bno', Bno );
+    formData.append('Bsubno', Bsubno);
+    axios({
+    method: 'post',
+    url: `${store.ip}/api/deleteBook`,
+    data: formData,
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+    .then((response) => {
+      const responseData = response.data;
+      if (responseData.ret === 1) {
+        ElMessage({
+          message: responseData.msg,
+          type: 'error',
+          duration: 5 * 1000,
+          grouping: true,
+        });
+      } else {
+        // alert(responseData.ret);
+        getBooks();
+      }
+    })
+  }
 
 // 更新价格
 const updatePrice = async (book) => {
@@ -295,6 +322,7 @@ onMounted(() => {
 .book-card {
     background: white; /* 卡片背景 */
     border-radius: 8px; /* 圆角 */
+    color: black;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 卡片阴影 */
     padding: 15px; /* 内边距 */
     display: flex; /* 使内容垂直排列 */

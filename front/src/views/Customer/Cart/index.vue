@@ -21,10 +21,13 @@
             </div>
         </div>
         <div class="total-delete">
-            <p>总价: ¥{{ (book.price * book.orderNumber).toFixed(2) }}</p>
+            <p>总价: ¥{{ book.price * book.orderNumber }}</p>
             <button class='deleteBtn' @click="removeItem(index)">删除</button>
         </div>
     </div>
+    <p>总价: ¥{{ totalPrice }}</p>
+    <p>折扣后总价: ¥{{ getDiscount(totalPrice) }}</p>
+    <button @click="submitCart" class="purchase">购买</button>
 </div>
     </div>
   </template>
@@ -89,12 +92,14 @@
   }
   
   const discountPrice = totalPrice * (1 - discount);
+  // alert(discountPrice);
   return discountPrice; // 返回折扣后的金额
 };
 
 const submitCart = () => {
-  const discountPrice = getDiscount(totalPrice); // 获取折扣后的金额
-
+  // alert(totalPrice.value);
+  const discountPrice = getDiscount(totalPrice.value); // 获取折扣后的金额
+  // alert(discountPrice);
   // 确保 discountPrice 是数字
   if (store.overdraft + store.balance >= discountPrice) {
     const cartData = store.cartItems.map(item => [
@@ -138,6 +143,7 @@ const submitCart = () => {
           } else {
             // 如果订单提交成功，做后续操作
             ElMessage({ message: '订单提交成功', type: 'success' });
+            getCartBook();
           }
         })
         .catch(error => {
@@ -151,9 +157,35 @@ const submitCart = () => {
   } else {
     ElMessage({ message: '账户余额不足', type: 'error' });
   }
+
 };
 
-  
+const getCartBook = () => {
+      let formData = new FormData();
+      formData.append('Uno', store.userid);
+      axios({
+          method: 'post',
+          data: formData,
+          url: `${store.ip}/api/getShoppingCart`,
+          headers: { 'Content-Type': 'multipart/form-data' }
+      })
+      .then(response => {
+          let responseData = response.data;
+          if (responseData.ret === 1) {
+              ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+          } else {
+              // 确保数据结构正确
+              store.cartItems.value = responseData.books.map(book => ({
+                  ...book,
+                  authors: Array.isArray(book.authors) ? book.authors : [book.authors],
+                  orderNumber: book.orderNumber || 1,
+                  total: book.total || book.price * (book.orderNumber || 1)
+              }));
+          }
+      });
+  };
+
+
 
   </script>
   

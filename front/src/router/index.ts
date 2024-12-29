@@ -88,6 +88,11 @@ const routes = [
         name: 'Purchase',
         component: () => import('../views/Bookshop/Purchase/index.vue')
       },
+      {
+        path: '/Bookshop/Provider',
+        name: 'Provider',
+        component: () => import('../views/Bookshop/Provider/index.vue')
+      },
       
     ]
   }
