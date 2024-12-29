@@ -27,14 +27,13 @@
                     <el-input v-model="newVendor.Vaddress" />
                 </el-form-item>
                 <el-form-item label="书籍">
-                    <el-input v-model="newBook.Bname" placeholder="书名" />
                     <el-input v-model="newBook.Bno" placeholder="书号" />
                     <el-input type="number" v-model="newBook.Bsubno" placeholder="丛书号" />
                     <el-input v-model="newBook.state" placeholder="状态" />
                     <el-button @click="addBook">添加书籍</el-button>
                     <ul>
                         <li v-for="(book, index) in newVendor.books" :key="index">
-                            {{ book.Bname }} (书号: {{ book.Bno }}, 丛书号: {{ book.Bsubno }}, 状态: {{ book.state }})
+                         书号: {{ book.Bno }}, 丛书号: {{ book.Bsubno }}, 状态: {{ book.state }}
                             <el-button @click="removeBook(index)">删除</el-button>
                         </li>
                     </ul>
@@ -156,6 +155,7 @@ onMounted(() => {
     padding: 20px;
     font-size: 18px;
     text-align: left;
+    overflow-y: auto;
     /* 确保文本左对齐 */
 }
 
