@@ -94,8 +94,9 @@ def processBookOrder(p_cursor, p_Ono, p_level, p_Uno):
         orderNumber = row_out[2]
         sql = f"select price, quantity from book where Bno = '{Bno}' and Bsubno = {Bsubno};"
         p_cursor.execute(sql)
-        price = p_cursor.fetchone()[0]
-        quantity = p_cursor.fetchone()[1]
+        result = p_cursor.fetchone()
+        price = result[0]
+        quantity = result[1]
         total = orderNumber * price 
         totalMoney = totalMoney + total
         if quantity < orderNumber:
@@ -345,8 +346,9 @@ def submitOrder():
     Ono = result[0]
     sql = f"select address, level from `user` where Uno = '{Uno}';"
     cursor.execute(sql)
-    deliveryAddress = cursor.fetchone()[0]
-    level = cursor.fetchone()[1]
+    result = cursor.fetchone()
+    deliveryAddress = result[0]
+    level = result[1]
     totalMoney, discountMoney = processBookOrder(cursor, Ono, level, Uno)
     sql = f'''update `user` set balance = balance - {discountMoney}, 
         total = total + {discountMoney}
@@ -414,7 +416,7 @@ def getOrders():
 def getBooks():
     books = []
     conn, cursor = connectSQL()
-    sql = f"select Bno, Bsubno from book;"
+    sql = f"select Bno, Bsubno from book where isValid = 1;"
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
