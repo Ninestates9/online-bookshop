@@ -6,11 +6,15 @@
         <div class="cart">
     <div v-for="(book, index) in store.cartItems" :key="book.Bno + book.Bsubno" class="cart-item">
         <div class="book-details">
-            <h4>{{ book.Bname }}</h4>
+          <div class="detail">
+            <p style="font-weight: bold;">{{ book.Bname }}</p>
+            <p style="padding-left: 10px;">作者: {{ book.authors.join(', ') }}</p>
+            <p style="padding-left: 10px;"> 出版社: {{ book.press }}</p>
+          </div>
+          <div class="detail">
             <p>书号: {{ book.Bno }}</p>
-            <p>丛书号: {{ book.Bsubno }}</p>
-            <p>作者: {{ book.authors.join(', ') }}</p>
-            <p>出版社: {{ book.press }}</p>
+            <p style="padding-left: 10px;">丛书号: {{ book.Bsubno }}</p>
+          </div>
         </div>
         <div class="price-quantity">
             <p>单价: ¥{{ book.price }}</p>
@@ -208,6 +212,11 @@ const getCartBook = () => {
     display: flex;
     flex-direction: column; /* 垂直排列 */
     margin-left: 5%;
+}
+
+.detail {
+  display: flex;
+  flex-direction:row; 
 }
 
 .price-quantity {
