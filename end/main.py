@@ -536,7 +536,8 @@ def finish():
 @app.route('/api/purchase', methods=["GET", "POST"])
 def purchase():
     conn, cursor = connectSQL()
-    shortageSet = request.form.getlist("shortageSet")
+    shortageSet = request.form.get("shortageSet")
+    shortageSet = json.loads(shortageSet)
     sql = f"select max(Pno) from shortage;"
     cursor.execute(sql)
     Pno = cursor.fetchone()

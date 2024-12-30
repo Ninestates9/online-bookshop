@@ -7,7 +7,7 @@
       <div v-if="orders.length > 0" class="order-list">
 
         <div v-for="(order, index) in orders" :key="index" class="order-item">
-          <el-descriptions :border="true" column="2" class="order-header">
+          <el-descriptions :border="true" column="2" class="order-header" size="large">
             <el-descriptions-item label="订单号">{{ order.Ono }}</el-descriptions-item>
             <el-descriptions-item label="总金额">{{ order.totalMoney }}</el-descriptions-item>
             <el-descriptions-item label="优惠金额">¥{{ order.discountMoney }}</el-descriptions-item>
@@ -175,7 +175,6 @@ onMounted(() => {
 }
 
 .righttop {
-  background-color: rgba(91, 247, 1, 0.421);
   width: 100%;
   height: 100%;
   display: flex;

@@ -6,7 +6,7 @@
     <div class="userinfo">
       <div v-for="user in users" :key="user.Uno" class="user-info">
 
-        <el-descriptions :border="true"  column="1" >
+        <el-descriptions :border="true"  column="1" size="large">
             <el-descriptions-item label="账号" label-width="100px">{{ user.Uno }}</el-descriptions-item>
             <el-descriptions-item label="昵称">{{ user.Uname }}</el-descriptions-item>
             <el-descriptions-item label="地址">{{ user.address }}</el-descriptions-item>
@@ -156,7 +156,6 @@ onMounted(() => {
   position: relative;
   overflow: hidden;
   align-items: center;
-  background-color: rgba(91, 247, 1, 0.421);
   width: 100%;
   height: 100%;
 }

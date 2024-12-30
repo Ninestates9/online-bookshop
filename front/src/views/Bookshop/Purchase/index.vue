@@ -105,7 +105,6 @@
     position: relative;
     overflow: hidden;
     align-items: center;
-    background-color: rgba(91, 247, 1, 0.421);
     width: 100%;
     height: 100%;
   }

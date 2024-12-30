@@ -5,7 +5,7 @@
     </div>
     <div class="messages">
       <div v-for="message in messages" :key="message.Uno" class="message" >
-      <el-descriptions :border="true"  column="1"  >
+      <el-descriptions :border="true"  column="1"  size="large">
             <el-descriptions-item label="账号" label-width="50px">{{ message.Uno }}</el-descriptions-item>
             <el-descriptions-item label="消息">{{ message.message }}</el-descriptions-item>
         </el-descriptions>
@@ -93,7 +93,6 @@ onMounted(() => {
   position: relative;
   overflow: hidden;
   align-items: center;
-  background-color: rgba(91, 247, 1, 0.421);
   width: 100%;
   height: 100%;
 }

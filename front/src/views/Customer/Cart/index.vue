@@ -1,5 +1,6 @@
 <template>
     <div class="rightmain">
+        <VantaBirds />
         <div class="righttop">
             <h3 class="topinfo">购物车</h3>
         </div>
@@ -41,6 +42,7 @@
   import { mainStore } from '../../../store/index.ts';
   import axios from 'axios';
   import { ElMessage } from 'element-plus';
+  import VantaBirds  from '../../VantaBirds.vue';
   const store = mainStore();
   const totalPrice = computed(() => {
     return Array.isArray(store.cartItems) 

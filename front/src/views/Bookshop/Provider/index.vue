@@ -7,7 +7,7 @@
             <button @click="dialogVisible = true">添加供应商</button>
             <div v-for="(vendor, index) in provider" :key="vendor.Vno"  class="vendor-item">
                 <!-- Vendor Information -->
-                <el-descriptions :border="true" column="2" class="order-header">
+                <el-descriptions :border="true" column="2" class="order-header" szie="large">
                     <el-descriptions-item label="供应商名称">{{ vendor.Vname }}</el-descriptions-item>
                     <el-descriptions-item label="供应商地址">{{ vendor.Vaddress }}</el-descriptions-item>
                 </el-descriptions>
@@ -157,7 +157,6 @@ onMounted(() => {
     position: relative;
     overflow: hidden;
     align-items: center;
-    background-color: rgba(91, 247, 1, 0.421);
     width: 100%;
     height: 100%;
 }

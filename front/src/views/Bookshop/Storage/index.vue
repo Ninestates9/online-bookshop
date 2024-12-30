@@ -17,7 +17,7 @@
                 </div>
             </el-card>
             <el-dialog v-model="isModalOpen" title="书籍详情">
-                <el-descriptions :border="true" column="3">
+                <el-descriptions :border="true" column="3" size="large">
                     <el-descriptions-item :rowspan="5" :width="200" label="" label-width="0px" align="center">
                         <img :src="store.ip + '/cover/' + selectedBook?.cover" alt="书本封面" class="book-cover" />
                     </el-descriptions-item>
@@ -335,7 +335,6 @@ onMounted(() => {
 .righttop {
     position: relative;
     overflow: hidden;
-    background-color: rgba(91, 247, 1, 0.421);
     width: 100%;
     height: 100%;
 }

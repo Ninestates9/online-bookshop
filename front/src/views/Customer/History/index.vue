@@ -1,12 +1,13 @@
 <template>
   <div class="rightmain">
+    <vanta-birds />
     <div class="righttop">
       <h3 class="topinfo">历史订单</h3>
     </div>
     <div class="history">
       <!-- 使用 v-for 显示历史订单 -->
       <div v-for="(order, index) in orders" :key="index" class="order-item">
-        <el-descriptions :border="true" column="2" class="order-header">
+        <el-descriptions :border="true" column="2" class="order-header" size="large">
           <el-descriptions-item label="订单时间">{{ order.orderTime }}</el-descriptions-item>
           <el-descriptions-item label="订单状态">{{ order.state }}</el-descriptions-item>
           <el-descriptions-item label="总金额">¥{{ order.totalMoney }}</el-descriptions-item>
@@ -46,6 +47,7 @@ import { ref, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
+import VantaBirds from '../../VantaBirds.vue';
 const store = mainStore();
 
 
@@ -102,11 +104,10 @@ onMounted(() => {
   display: grid;
   grid-template-rows: 15% 85%;
   height: 98.5vh;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0);
 }
 
 .righttop {
-  background-color: rgba(91, 247, 1, 0.421);
   width: 100%;
   padding: 10px;
   display: flex;

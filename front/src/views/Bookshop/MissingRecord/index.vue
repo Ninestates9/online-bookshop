@@ -153,7 +153,7 @@ const submitPurchaseOrder = () => {
   }
 
   const formData = new FormData();
-  formData.append('shortageSet', selectedOrders.value);
+  formData.append('shortageSet', JSON.stringify(selectedOrders.value));
 
   // Sending the selected orders as a purchase order to the backend
   axios({
@@ -201,7 +201,6 @@ onMounted(() => {
   position: relative;
   overflow: hidden;
   align-items: center;
-  background-color: rgba(91, 247, 1, 0.421);
   width: 100%;
   height: 100%;
 }
