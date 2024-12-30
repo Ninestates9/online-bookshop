@@ -32,7 +32,7 @@
         <button @click="submitPurchaseOrder" class="submit-button">生成采购单</button>
       </div>
       <!-- Modal for registering shortage order -->
-      <el-dialog :model-value="isModalVisible" title="登记缺货订单" style="width: 50%;" center>
+      <el-dialog :model-value="isModalVisible" title="登记缺货订单" style="width: 50%;" center @close="isModalVisible = false">
         <el-form :model="newOrder" ref="orderForm" label-width="100px">
           <el-form-item label="书号">
             <el-input v-model="newOrder.Bno" placeholder="请输入书号" required></el-input>

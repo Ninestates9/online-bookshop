@@ -56,7 +56,7 @@
             <el-button size="large" type="primary" @click="showDialog">添加书目</el-button>
         </div>
 
-        <el-dialog title="添加新书籍" :model-value="dialogVisible">
+        <el-dialog title="添加新书籍" :model-value="dialogVisible" @close="dialogVisible = false">
             <div>
                 <el-upload class="upload-demo" action="#" :show-file-list="false" :on-change="handleImageChange"
                     :before-upload="beforeUpload" accept="image/*">
