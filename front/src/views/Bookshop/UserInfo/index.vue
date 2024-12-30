@@ -1,5 +1,6 @@
 <template>
   <div class="rightmain">
+    <VantaBirds />
     <div class="righttop">
       <h3 class="topinfo">用户信息</h3>
     </div>
@@ -45,6 +46,7 @@ import { ref, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
+import VantaBirds from '../../VantaBirds.vue';
 
 const store = mainStore();
 const users = ref([

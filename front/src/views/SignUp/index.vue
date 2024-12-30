@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <img src="../../assets/images/sign_background.jpg">
+        <Cloud />
         <div class="signin-wrapper">
             <h1 class="header">
                 注册
@@ -30,6 +30,7 @@ import { ElMessage } from 'element-plus';
 import axios from 'axios';
 import { mainStore } from '../../store/index.ts';
 import router from "../../router";
+import Cloud from '../Cloud.vue';
 
 const store = mainStore();
 const username = ref('');

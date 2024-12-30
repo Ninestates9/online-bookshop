@@ -1,5 +1,6 @@
 <template>
     <div class="m-vendor-rightmain">
+        <VantaBirds />
         <div class="m-vendor-righttop">
             <h3 class="topinfo">供应商</h3>
         </div>
@@ -65,6 +66,7 @@ import { ref, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
+import VantaBirds from '../../VantaBirds.vue';
 
 const store = mainStore();
 const provider = ref([]);

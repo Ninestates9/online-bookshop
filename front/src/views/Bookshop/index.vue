@@ -1,7 +1,7 @@
 <template>
     <div class="CustomerMain">
       <el-container>
-        <el-aside width="20%" style="background-color: white;">
+        <el-aside width="20%">
           <div class="lefttop">
             <el-avatar class="av" shape="square" :size="90" :src="misakaImg" alt="Misaka Mikoto" fit="cover" />
             <h2 class="username">{{ store.username }}</h2>

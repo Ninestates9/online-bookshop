@@ -1,5 +1,6 @@
 <template>
   <div class="rightmain">
+    <VantaBirds />
     <div class="righttop">
       <h3 class="topinfo">缺书记录</h3>
     </div>
@@ -32,7 +33,8 @@
         <button @click="submitPurchaseOrder" class="submit-button">生成采购单</button>
       </div>
       <!-- Modal for registering shortage order -->
-      <el-dialog :model-value="isModalVisible" title="登记缺货订单" style="width: 50%;" center @close="isModalVisible = false">
+      <el-dialog :model-value="isModalVisible" title="登记缺货订单" style="width: 50%;" center
+        @close="isModalVisible = false">
         <el-form :model="newOrder" ref="orderForm" label-width="100px">
           <el-form-item label="书号">
             <el-input v-model="newOrder.Bno" placeholder="请输入书号" required></el-input>
@@ -61,6 +63,8 @@ import { ref, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage, ElDialog, ElButton, ElForm, ElFormItem, ElInput, ElCheckbox } from 'element-plus';
+import Cloud from '../../Cloud.vue';
+import VantaBirds from '../../VantaBirds.vue';
 
 const store = mainStore();
 const shortageSet = ref<any[]>([]);  // To store shortage orders
@@ -314,7 +318,6 @@ p strong {
 .dialog-footer {
   width: 100%;
   display: flex;
-  justify-content:space-around;
+  justify-content: space-around;
 }
-
 </style>

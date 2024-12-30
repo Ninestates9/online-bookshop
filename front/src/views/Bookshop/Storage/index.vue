@@ -1,5 +1,6 @@
 <template>
     <div class="m-storage-rightmain">
+        <VantaBirds />
         <div class="m-righttop">
             <h3 class="topinfo">库存</h3>
         </div>
@@ -118,6 +119,7 @@ import { ref, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElCard, ElRow, ElCol, ElMessage } from 'element-plus';
+import VantaBirds from '../../VantaBirds.vue';
 
 const store = mainStore();
 

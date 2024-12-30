@@ -1,5 +1,6 @@
 <template>
   <div class="m-order-rightmain">
+    <VantaBirds />
     <div class="m-order-righttop">
       <h3 class="topinfo">订单</h3>
     </div>
@@ -58,6 +59,7 @@ import { ref, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
+import VantaBirds from '../../VantaBirds.vue';
 
 const store = mainStore();
 const orders = ref([]); // 保存订单数据
