@@ -3,7 +3,7 @@
     <VantaBirds />
 
     <div class="top">
-      <h3 class="topinfo">购物车</h3>
+      <h3 class="topinfo" style="font-size: 30px;">购物车</h3>
 
     </div>
     <el-scrollbar class="cart">

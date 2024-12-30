@@ -6,13 +6,11 @@
             <h3 class="topinfo">留言</h3>
         </div>
         <div class="message">
-            <el-input v-model="textarea" style="width: 90%; margin-left: 5%;" :autosize="{ minRows: 1, maxRows: 14 }" type="textarea" placeholder="请输入留言" />
-            <el-button @click="sendMessage" class="sendMessageBtn">发送留言</el-button>
-
-
-
+            <el-input v-model="textarea" style="width: 90%; margin-left: 5%;" :autosize="{ minRows: 5, maxRows: 14 }" type="textarea" placeholder="请输入留言" />
+            <div class="sendMessageBtn">
+            <el-button @click="sendMessage" size="large">发送留言</el-button>
+            </div>
         </div>
-
     </div>
 </template>
 
@@ -65,13 +63,10 @@ const sendMessage = () => {
 }
 
 .righttop {
-    position: relative;
-    overflow: hidden;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0);
     width: 100%;
-    height: 100%;
-    color: black;
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
 }
 
 .topinfo {
@@ -83,11 +78,9 @@ const sendMessage = () => {
 }
 
 .message {
-    flex-grow: 1;
-    width: 90%;
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
 }
 
 button {
@@ -97,14 +90,14 @@ button {
 
 .vexlie2 {
     position: absolute;
-    right: 2%;
+    left: 2%;
     bottom: -80px;
     width: 320px;
     height: 320px;
 }
 .sendMessageBtn {
-    position: absolute;
-    margin-left: 5%;
-    bottom: 40%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 </style>
