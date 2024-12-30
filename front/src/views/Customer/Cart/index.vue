@@ -1,8 +1,10 @@
 <template>
   <div class="rightmain-cart">
     <VantaBirds />
+
     <div class="top">
       <h3 class="topinfo">购物车</h3>
+
     </div>
     <el-scrollbar class="cart">
       <div v-for="(book, index) in store.cartItems" :key="book.Bno + book.Bsubno" class="cart-item">
@@ -31,7 +33,9 @@
       <p>总价: ¥{{ totalPrice }}</p>
       <p>折扣后总价: ¥{{ getDiscount(totalPrice) }}</p>
       <button @click="submitCart" class="purchase">购买</button>
+      <el-image style="width: 200px; height: 200px" class="vexlie" fit="fit" :src="vexlieImg" />
     </div>
+
   </div>
 </template>
 
@@ -41,6 +45,7 @@ import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import VantaBirds from '../../VantaBirds.vue';
+import vexlieImg from '../../../assets/images/vex_lie2.png'
 const store = mainStore();
 const totalPrice = computed(() => {
   return Array.isArray(store.cartItems)
@@ -268,5 +273,10 @@ const getCartBook = () => {
   margin-top: 20px;
   font-size: 20px;
   font-weight: bold;
+}
+.vexlie {
+  position:relative;
+  bottom: -50px;
+  right: -200px;
 }
 </style>

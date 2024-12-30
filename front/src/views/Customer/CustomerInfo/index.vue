@@ -4,49 +4,55 @@
         <div class="righttop">
             <h3 class="topinfo">用户信息</h3>
         </div>
-        <el-descriptions :border="true" column="1" class="userTable" size="large">
-            <el-descriptions-item label="用户ID" label-width="100px" >{{ store.userid }}</el-descriptions-item>
-            <el-descriptions-item label="用户名" >
-                <span v-if="!isEditing.username">{{ store.username }}</span>
-                <input v-if="isEditing.username" v-model="newUsername" type="text" />
-                <el-button @click="toggleEdit('username')">{{ isEditing.username ? '保存' : '修改信息' }}</el-button>
-            </el-descriptions-item>
-            <el-descriptions-item label="地址" >
-                <span v-if="!isEditing.address">{{ store.address }}</span>
-                <input v-if="isEditing.address" v-model="newAddress" type="text" />
-                <el-button @click="toggleEdit('address')">{{ isEditing.address ? '保存' : '修改信息' }}</el-button>
-            </el-descriptions-item>
-            <el-descriptions-item label="余额" >{{ store.balance }}
-                <el-button id="recharge" @click="openPurchaseModal()">充值</el-button>
-            </el-descriptions-item>
-            <el-descriptions-item label="信用等级" >{{ store.userlevel }}</el-descriptions-item>
-        </el-descriptions>
+        <div>
+            <el-descriptions :border="true" column="1" class="userTable" size="large">
+                <el-descriptions-item label="用户ID" label-width="100px">{{ store.userid }}</el-descriptions-item>
+                <el-descriptions-item label="用户名">
+                    <span v-if="!isEditing.username">{{ store.username }}</span>
+                    <input v-if="isEditing.username" v-model="newUsername" type="text" />
+                    <el-button @click="toggleEdit('username')">{{ isEditing.username ? '保存' : '修改信息' }}</el-button>
+                </el-descriptions-item>
+                <el-descriptions-item label="地址">
+                    <span v-if="!isEditing.address">{{ store.address }}</span>
+                    <input v-if="isEditing.address" v-model="newAddress" type="text" />
+                    <el-button @click="toggleEdit('address')">{{ isEditing.address ? '保存' : '修改信息' }}</el-button>
+                </el-descriptions-item>
+                <el-descriptions-item label="余额">{{ store.balance }}
+                    <el-button id="recharge" @click="openPurchaseModal()">充值</el-button>
+                </el-descriptions-item>
+                <el-descriptions-item label="信用等级">{{ store.userlevel }}</el-descriptions-item>
+            </el-descriptions>
 
-        <el-dialog v-model="isModalOpen" title="账户充值">
-            <div class="recharge-options">
-                <el-button v-for="amount in rechargeAmounts" :key="amount" @click="setRechargeAmount(amount)">
-                    {{ amount }}
-                </el-button>
+            <el-dialog v-model="isModalOpen" title="账户充值">
+                <div class="recharge-options">
+                    <el-button v-for="amount in rechargeAmounts" :key="amount" @click="setRechargeAmount(amount)">
+                        {{ amount }}
+                    </el-button>
+                </div>
+                <div class="recharge_pic">
+                    <el-avatar class="rechargeImg" shape="square" :size="90" :src="rechargeImg" alt="提示" fit="cover" />
+                </div>
+                <div class="modal-actions">
+                    <span class="modal-buttons">
+                        <el-button class='botbtn' @click="isModalOpen = false">取消</el-button>
+                        <el-button class='botbtn' type="primary" @click="openQRcode">确认</el-button>
+                    </span>
+                </div>
+            </el-dialog>
+            <el-dialog v-model="isQRcodeOpen" title="账户充值" @close="resetRecharge" class="QRcode-dia">
+                <div class="qr-container">
+                    <el-avatar class="QRcode" shape="square" :size="90" :src="QRcode" alt="二维码" fit="cover" />
+                </div>
+                <div class="modal-actions">
+                    <el-button class='botbtn' @click="isQRcodeOpen = false">取消</el-button>
+                    <el-button class='botbtn' type="primary" @click="recharge">完成</el-button>
+                </div>
+            </el-dialog>
+            <div class="right-bottom">
+                <el-image class="vexsit" fit="fit" :src="vexsitImg" />
             </div>
-            <div class="recharge_pic">
-                <el-avatar class="rechargeImg" shape="square" :size="90" :src="rechargeImg" alt="提示" fit="cover" />
-            </div>
-            <div class="modal-actions">
-                <span class="modal-buttons">
-                    <el-button class='botbtn' @click="isModalOpen = false">取消</el-button>
-                    <el-button class='botbtn' type="primary" @click="openQRcode">确认</el-button>
-                </span>
-            </div>
-        </el-dialog>
-        <el-dialog v-model="isQRcodeOpen" title="账户充值" @close="resetRecharge" class="QRcode-dia">
-            <div class="qr-container">
-                <el-avatar class="QRcode" shape="square" :size="90" :src="QRcode" alt="二维码" fit="cover" />
-            </div>
-            <div class="modal-actions">
-                <el-button class='botbtn' @click="isQRcodeOpen = false">取消</el-button>
-                <el-button class='botbtn' type="primary" @click="recharge">完成</el-button>
-            </div>
-        </el-dialog>
+        </div>
+
     </div>
 </template>
 
@@ -58,6 +64,7 @@ import { ElMessage } from 'element-plus';
 import VantaBirds from '../../VantaBirds.vue';
 import QRcode from '../../../assets/images/QRcode.jpg'
 import rechargeImg from '../../../assets/images/recharge.png'
+import vexsitImg from '../../../assets/images/vex_seat.png'
 const store = mainStore();
 const isEditing = ref({ username: false, address: false });
 const newUsername = ref(store.username);
@@ -241,6 +248,7 @@ button {
 .QRcode-dia {
     background-color: rgb(109, 117, 130);
 }
+
 .qr-container {
     display: flex;
     justify-content: center;
@@ -255,6 +263,7 @@ button {
     margin-top: 20px;
     /* 增加按钮与上面内容的边距 */
 }
+
 .botbtn {
     position: relative;
 }
@@ -263,9 +272,16 @@ button {
     width: 320px;
     height: 320px;
 }
-s
+
+.vexsit {
+    position: absolute;
+    right: 2%;
+    bottom: 5px;
+    width: 320px;
+    height: 320px;
+}
 
 ::v-deep .el-descriptions__body {
-    background-color: #ffffff82 ;
+    background-color: #ffffff82;
 }
 </style>
