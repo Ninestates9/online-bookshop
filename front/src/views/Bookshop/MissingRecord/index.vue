@@ -312,6 +312,7 @@ p strong {
 }
 
 .dialog-footer {
+  width: 100%;
   display: flex;
   justify-content:space-around;
 }

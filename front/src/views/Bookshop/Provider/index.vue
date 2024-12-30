@@ -1,13 +1,12 @@
 <template>
-    <div class="rightmain">
-        <div class="righttop">
+    <div class="m-vendor-rightmain">
+        <div class="m-vendor-righttop">
             <h3 class="topinfo">供应商</h3>
         </div>
-        <div class="Provider">
-            <button @click="dialogVisible = true">添加供应商</button>
+        <el-scroller class="Provider">
             <div v-for="(vendor, index) in provider" :key="vendor.Vno"  class="vendor-item">
                 <!-- Vendor Information -->
-                <el-descriptions :border="true" column="2" class="order-header" szie="large">
+                <el-descriptions :border="true" column="2" class="order-header" size="large">
                     <el-descriptions-item label="供应商名称">{{ vendor.Vname }}</el-descriptions-item>
                     <el-descriptions-item label="供应商地址">{{ vendor.Vaddress }}</el-descriptions-item>
                 </el-descriptions>
@@ -26,7 +25,10 @@
                     </el-collapse>
                 </div>
             </div>
-        </div>
+        </el-scroller>
+        <div class="m-vendor-button">
+        <button @click="dialogVisible = true" size="large">添加供应商</button>
+    </div>
 
         <!-- Dialog to add a new vendor -->
         <el-dialog :model-value="dialogVisible" title="添加供应商" @close="dialogVisible = false">
@@ -113,11 +115,11 @@ const addProvider = () => {
 }
 
 const addBook = () => {
-    if (newBook.value.Bname && newBook.value.Bno) {
+    if (newBook.value.Bno) {
         newVendor.value.books.push({ ...newBook.value });
         resetBook();
     } else {
-        ElMessage.warning('请填写书名和书号');
+        ElMessage.warning('请填写书号');
     }
 }
 
@@ -142,23 +144,25 @@ onMounted(() => {
 });
 </script>
 
-<style>
-.rightmain {
-    position: relative;
-    display: flex;
-    height: 98.5vh;
-    width: 100%;
-    overflow: hidden;
-    display: grid;
-    grid-template-rows: 15% 85%;
+<style scoped>
+
+:deep(.el-collapse-item__header:focus, .el-collapse-item__header:focus-visible) {
+    outline: none;
 }
 
-.righttop {
-    position: relative;
-    overflow: hidden;
-    align-items: center;
+:deep(.el-collapse-item__header) {
+    margin-left: 0;
+}
+
+.m-vendor-rightmain {
+    display: flex;
+    flex-direction: column;
+    height: 98.5vh;
     width: 100%;
-    height: 100%;
+}
+
+.m-vendor-righttop {
+    align-items: center;
 }
 
 .topinfo {
@@ -173,12 +177,17 @@ onMounted(() => {
     padding: 20px;
     font-size: 18px;
     text-align: left;
-    overflow-y: auto;
+    height: 60%;
 }
 
 button {
     margin-left: 10px;
     background-color: aqua;
+}
+
+.m-vendor-button {
+    display: flex;
+    justify-content: center;
 }
 
 .vendor-item {
@@ -211,4 +220,5 @@ button {
 .dialog-footer {
     text-align: right;
 }
+
 </style>
