@@ -31,7 +31,7 @@
     </div>
 
         <!-- Dialog to add a new vendor -->
-        <el-dialog :model-value="dialogVisible" title="添加供应商">
+        <el-dialog :model-value="dialogVisible" title="添加供应商" @close="dialogVisible = false">
             <el-form :model="newVendor">
                 <el-form-item label="供应商名称" required>
                     <el-input v-model="newVendor.Vname" />

@@ -277,6 +277,6 @@ const getCartBook = () => {
 .vexlie {
   position:relative;
   bottom: -50px;
-  right: -200px;
+  left: -800px;
 }
 </style>

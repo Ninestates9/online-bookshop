@@ -6,8 +6,8 @@
             <h3 class="topinfo">留言</h3>
         </div>
         <div class="message">
-            <el-input v-model="textarea" style="width: 100%" :rows="2" type="textarea" placeholder="请输入留言" />
-            <el-button @click="sendMessage">发送留言</el-button>
+            <el-input v-model="textarea" style="width: 90%; margin-left: 5%;" :autosize="{ minRows: 1, maxRows: 14 }" type="textarea" placeholder="请输入留言" />
+            <el-button @click="sendMessage" class="sendMessageBtn">发送留言</el-button>
 
 
 
@@ -101,5 +101,10 @@ button {
     bottom: -80px;
     width: 320px;
     height: 320px;
+}
+.sendMessageBtn {
+    position: absolute;
+    margin-left: 5%;
+    bottom: 40%;
 }
 </style>
