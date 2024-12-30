@@ -5,21 +5,21 @@
             <h3 class="topinfo">用户信息</h3>
         </div>
         <el-descriptions :border="true" column="1" class="userTable" size="large">
-            <el-descriptions-item label="用户ID" label-width="100px">{{ store.userid }}</el-descriptions-item>
-            <el-descriptions-item label="用户名">
+            <el-descriptions-item label="用户ID" label-width="100px" >{{ store.userid }}</el-descriptions-item>
+            <el-descriptions-item label="用户名" >
                 <span v-if="!isEditing.username">{{ store.username }}</span>
                 <input v-if="isEditing.username" v-model="newUsername" type="text" />
                 <el-button @click="toggleEdit('username')">{{ isEditing.username ? '保存' : '修改信息' }}</el-button>
             </el-descriptions-item>
-            <el-descriptions-item label="地址">
+            <el-descriptions-item label="地址" >
                 <span v-if="!isEditing.address">{{ store.address }}</span>
                 <input v-if="isEditing.address" v-model="newAddress" type="text" />
                 <el-button @click="toggleEdit('address')">{{ isEditing.address ? '保存' : '修改信息' }}</el-button>
             </el-descriptions-item>
-            <el-descriptions-item label="余额">{{ store.balance }}
+            <el-descriptions-item label="余额" >{{ store.balance }}
                 <el-button id="recharge" @click="openPurchaseModal()">充值</el-button>
             </el-descriptions-item>
-            <el-descriptions-item label="信用等级">{{ store.userlevel }}</el-descriptions-item>
+            <el-descriptions-item label="信用等级" >{{ store.userlevel }}</el-descriptions-item>
         </el-descriptions>
 
         <el-dialog v-model="isModalOpen" title="账户充值">
@@ -262,5 +262,10 @@ button {
 .rechargeImg {
     width: 320px;
     height: 320px;
+}
+s
+
+::v-deep .el-descriptions__body {
+    background-color: #ffffff82 ;
 }
 </style>
