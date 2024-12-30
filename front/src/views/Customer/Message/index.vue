@@ -1,13 +1,18 @@
 <template>
     <div class="rightmain">
         <VantaBirds />
+        <el-image style="width: 400px; height: 400px" class="vexlie2" fit="fit" :src="vexlieImg" />
         <div class="righttop">
             <h3 class="topinfo">留言</h3>
         </div>
         <div class="message">
             <el-input v-model="textarea" style="width: 100%" :rows="2" type="textarea" placeholder="请输入留言" />
             <el-button @click="sendMessage">发送留言</el-button>
+
+
+
         </div>
+
     </div>
 </template>
 
@@ -17,7 +22,7 @@ import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import VantaBirds from '../../VantaBirds.vue';
-
+import vexlieImg from '../../../assets/images/vex_lie.png'
 const store = mainStore();
 const textarea = ref('');
 const sendMessage = () => {
@@ -78,14 +83,23 @@ const sendMessage = () => {
 }
 
 .message {
+    flex-grow: 1;
     width: 90%;
     display: flex;
-    flex-wrap: wrap; 
+    flex-wrap: wrap;
     gap: 10px;
 }
 
 button {
     margin-left: 10px;
     background-color: aqua;
+}
+
+.vexlie2 {
+    position: absolute;
+    right: 2%;
+    bottom: -80px;
+    width: 320px;
+    height: 320px;
 }
 </style>
