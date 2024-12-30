@@ -186,6 +186,7 @@ const getCartBook = () => {
 };
 
 onMounted(() => {
+  getuserinfo();
   if (!store.cartItems || store.cartItems.length === 0) {
     store.cartItems = []; // 确保是数组
   }

@@ -149,7 +149,7 @@ const submitCart = () => {
           } else {
             // 如果订单提交成功，做后续操作
             ElMessage({ message: '订单提交成功', type: 'success' });
-            getCartBook();
+            store.cartItems=ref([]);
           }
         })
         .catch(error => {
@@ -258,6 +258,9 @@ const getCartBook = () => {
     margin-top: 20px;
     font-size: 20px;
     font-weight: bold;
+}
+.righttop {
+  background-color: aqua;
 }
   </style>
   

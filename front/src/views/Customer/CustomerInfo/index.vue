@@ -60,11 +60,12 @@ const updateUserInfo = (field: 'username' | 'address', value: string) => {
     formData.append('password', store.password);
     if (field === 'username') {
         store.username = value;
-        formData.append('Uname', value);
+
     } else {
         store.address = value;
-        formData.append('address', value);
     }
+    formData.append('Uname', store.username);
+    formData.append('address', store.address);
 
     axios.post(`${store.ip}/api/updateInfo`, formData, { headers: { 'Content-Type': 'multipart/form-data' } })
         .then(response => {
