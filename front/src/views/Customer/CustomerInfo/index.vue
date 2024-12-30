@@ -5,7 +5,7 @@
             <h3 class="topinfo">用户信息</h3>
         </div>
         <el-descriptions :border="true"  column="1">
-            <el-descriptions-item label="用户ID">{{ store.userid }}</el-descriptions-item>
+            <el-descriptions-item label="用户ID" label-width="100px" >{{ store.userid }}</el-descriptions-item>
             <el-descriptions-item label="用户名">
                 <span v-if="!isEditing.username">{{ store.username }}</span>
                 <input v-if="isEditing.username" v-model="newUsername" type="text" />

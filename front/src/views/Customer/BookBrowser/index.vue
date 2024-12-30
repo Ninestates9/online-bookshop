@@ -2,9 +2,9 @@
   <div class="rightmain">
     <div class="righttop">
       <div class="mt-4">
-        <el-input v-model="searchInput" placeholder="请输入搜索内容" class="input-with-select">
+        <el-input v-model="searchInput" placeholder="请输入搜索内容" class="input-with-select" size="large">
           <template #prepend>
-            <el-select v-model="store.searchOP" placeholder="类型" style="width: 115px">
+            <el-select v-model="store.searchOP" placeholder="类型" style="width: 115px" size="large" >
               <el-option label="书号" value=" Bno" />
               <el-option label="书名" value="Bname" />
               <el-option label="出版社" value="press" />
