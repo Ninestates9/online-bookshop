@@ -62,7 +62,7 @@ import { mainStore } from '../../../store/index.ts';
 import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import VantaBirds from '../../VantaBirds.vue';
-import QRcode from '../../../assets/images/QRcode.jpg'
+import QRcode from '../../../assets/images/QRcode.png'
 import rechargeImg from '../../../assets/images/recharge.png'
 import vexsitImg from '../../../assets/images/vex_seat.png'
 const store = mainStore();
@@ -237,6 +237,7 @@ button {
 .QRcode {
     width: 370px;
     height: 370px;
+    background-color: white;
 }
 
 .el-dialog {
@@ -246,7 +247,6 @@ button {
 }
 
 .QRcode-dia {
-    background-color: rgb(109, 117, 130);
 }
 
 .qr-container {

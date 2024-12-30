@@ -370,6 +370,7 @@ onMounted(() => {
     /* 阴影效果 */
     box-sizing: border-box;
     /* 包含边距和填充在宽高内 */
+    cursor: pointer;
 }
 
 .book-cover {

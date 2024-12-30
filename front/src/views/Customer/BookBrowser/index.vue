@@ -262,6 +262,7 @@ const getBookBrowser = () => {
   box-sizing: border-box;
   /* 包含边距和填充在宽高内 */
   background-color: #ffffff7b;
+  cursor: pointer;
 }
 
 .book-cover {
