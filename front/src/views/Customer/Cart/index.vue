@@ -1,75 +1,73 @@
 <template>
-    <div class="rightmain">
-        <VantaBirds />
-        <div class="righttop">
-            <h3 class="topinfo">购物车</h3>
-        </div>
-        <div class="cart">
-    <div v-for="(book, index) in store.cartItems" :key="book.Bno + book.Bsubno" class="cart-item">
+  <div class="rightmain-cart">
+    <VantaBirds />
+    <div class="top">
+      <h3 class="topinfo">购物车</h3>
+    </div>
+    <el-scrollbar class="cart">
+      <div v-for="(book, index) in store.cartItems" :key="book.Bno + book.Bsubno" class="cart-item">
         <div class="book-details">
-          <div class="detail">
+          <div>
             <p style="font-weight: bold;">{{ book.Bname }}</p>
-            <p style="padding-left: 10px;">作者: {{ book.authors.join(', ') }}</p>
-            <p style="padding-left: 10px;"> 出版社: {{ book.press }}</p>
           </div>
-          <div class="detail">
+          <div class="detail-1">           
+            <p>作者: {{ book.authors.join(', ') }}</p>
+            <p style="padding-left: 30px;"> 出版社: {{ book.press }}</p>
+          </div>
+          <div class="detail-2">
             <p>书号: {{ book.Bno }}</p>
-            <p style="padding-left: 10px;">丛书号: {{ book.Bsubno }}</p>
+            <p style="padding-left: 30px;">丛书号: {{ book.Bsubno }}</p>
           </div>
         </div>
-        <div class="price-quantity">
-            <p>单价: ¥{{ book.price }}</p>
-            <div class="quantity-control">
-                <button @click="decreaseQuantity(index)">-</button>
-                <input type="number" v-model.number="book.orderNumber" min="1" />
-                <button @click="increaseQuantity(index)">+</button>
-            </div>
+        <div class="book-control">
+          <span>单价: ¥{{ book.price }}</span>
+          <el-input-number v-model.number="book.orderNumber" :min="1" size="large"/>
+          <span>总价: ¥{{ book.price * book.orderNumber }}</span>         
+          <button class='deleteBtn' @click="removeItem(index)">删除</button>
         </div>
-        <div class="total-delete">
-            <p>总价: ¥{{ book.price * book.orderNumber }}</p>
-            <button class='deleteBtn' @click="removeItem(index)">删除</button>
-        </div>
+      </div>
+    </el-scrollbar>
+    <div class="bottom">
+      <p>总价: ¥{{ totalPrice }}</p>
+      <p>折扣后总价: ¥{{ getDiscount(totalPrice) }}</p>
+      <button @click="submitCart" class="purchase">购买</button>
     </div>
-    <p>总价: ¥{{ totalPrice }}</p>
-    <p>折扣后总价: ¥{{ getDiscount(totalPrice) }}</p>
-    <button @click="submitCart" class="purchase">购买</button>
-</div>
-    </div>
-  </template>
-  
-  <script lang="ts" setup>
-  import { ref, computed, onMounted } from 'vue';
-  import { mainStore } from '../../../store/index.ts';
-  import axios from 'axios';
-  import { ElMessage } from 'element-plus';
-  import VantaBirds  from '../../VantaBirds.vue';
-  const store = mainStore();
-  const totalPrice = computed(() => {
-    return Array.isArray(store.cartItems) 
-      ? store.cartItems.reduce((total, book) => total + (book.price * book.orderNumber), 0)
-      : 0;
-  });
-  
-  // 增加数量
-  const increaseQuantity = (index) => {
-      store.cartItems[index].orderNumber++;
-  };
-  
-  // 减少数量
-  const decreaseQuantity = (index) => {
-      if (store.cartItems[index].orderNumber > 1) {
-          store.cartItems[index].orderNumber--;
-      }
-  };
-  
-  // 删除书籍
-  const removeItem = (index) => {
-      store.cartItems.splice(index, 1);
-  };
-  
-  const getDiscount = (totalPrice) => {
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { ref, computed, onMounted } from 'vue';
+import { mainStore } from '../../../store/index.ts';
+import axios from 'axios';
+import { ElMessage } from 'element-plus';
+import VantaBirds from '../../VantaBirds.vue';
+const store = mainStore();
+const totalPrice = computed(() => {
+  return Array.isArray(store.cartItems)
+    ? store.cartItems.reduce((total, book) => total + (book.price * book.orderNumber), 0)
+    : 0;
+});
+
+// 增加数量
+const increaseQuantity = (index) => {
+  store.cartItems[index].orderNumber++;
+};
+
+// 减少数量
+const decreaseQuantity = (index) => {
+  if (store.cartItems[index].orderNumber > 1) {
+    store.cartItems[index].orderNumber--;
+  }
+};
+
+// 删除书籍
+const removeItem = (index) => {
+  store.cartItems.splice(index, 1);
+};
+
+const getDiscount = (totalPrice) => {
   let discount;
-  
+
   switch (store.userlevel) {
     case 1:
       discount = 0;
@@ -96,7 +94,7 @@
       store.overdraft = 0; // 默认折扣
       break;
   }
-  
+
   const discountPrice = totalPrice * (1 - discount);
   // alert(discountPrice);
   return discountPrice; // 返回折扣后的金额
@@ -126,40 +124,40 @@ const submitCart = () => {
       data: formData,
       headers: { 'Content-Type': 'multipart/form-data' }
     })
-    .then(response => {
-      let responseData = response.data;
-      if (responseData.ret === 1) {
-        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-      } else {
-        // 购物车数据提交成功，接着提交订单
-        let Uno = new FormData();
-        Uno.append('Uno', store.userid);
+      .then(response => {
+        let responseData = response.data;
+        if (responseData.ret === 1) {
+          ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+        } else {
+          // 购物车数据提交成功，接着提交订单
+          let Uno = new FormData();
+          Uno.append('Uno', store.userid);
 
-        // 提交订单数据
-        axios({
-          method: 'post',
-          url: `${store.ip}/api/submitOrder`, // 修正 URL
-          data: Uno,
-          headers: { 'Content-Type': 'multipart/form-data' }
-        })
-        .then(response => {
-          let responseData = response.data;
-          if (responseData.ret === 1) {
-            ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-          } else {
-            // 如果订单提交成功，做后续操作
-            ElMessage({ message: '订单提交成功', type: 'success' });
-            store.cartItems=ref([]);
-          }
-        })
-        .catch(error => {
-          ElMessage.error('提交订单时出错');
-        });
-      }
-    })
-    .catch(error => {
-      ElMessage.error('提交购物车时出错');
-    });
+          // 提交订单数据
+          axios({
+            method: 'post',
+            url: `${store.ip}/api/submitOrder`, // 修正 URL
+            data: Uno,
+            headers: { 'Content-Type': 'multipart/form-data' }
+          })
+            .then(response => {
+              let responseData = response.data;
+              if (responseData.ret === 1) {
+                ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+              } else {
+                // 如果订单提交成功，做后续操作
+                ElMessage({ message: '订单提交成功', type: 'success' });
+                store.cartItems = ref([]);
+              }
+            })
+            .catch(error => {
+              ElMessage.error('提交订单时出错');
+            });
+        }
+      })
+      .catch(error => {
+        ElMessage.error('提交购物车时出错');
+      });
   } else {
     ElMessage({ message: '账户余额不足', type: 'error' });
   }
@@ -167,100 +165,108 @@ const submitCart = () => {
 };
 
 const getCartBook = () => {
-      let formData = new FormData();
-      formData.append('Uno', store.userid);
-      axios({
-          method: 'post',
-          data: formData,
-          url: `${store.ip}/api/getShoppingCart`,
-          headers: { 'Content-Type': 'multipart/form-data' }
-      })
-      .then(response => {
-          let responseData = response.data;
-          if (responseData.ret === 1) {
-              ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-          } else {
-              // 确保数据结构正确
-              store.cartItems.value = responseData.books.map(book => ({
-                  ...book,
-                  authors: Array.isArray(book.authors) ? book.authors : [book.authors],
-                  orderNumber: book.orderNumber || 1,
-                  total: book.total || book.price * (book.orderNumber || 1)
-              }));
-          }
-      });
-  };
+  let formData = new FormData();
+  formData.append('Uno', store.userid);
+  axios({
+    method: 'post',
+    data: formData,
+    url: `${store.ip}/api/getShoppingCart`,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+    .then(response => {
+      let responseData = response.data;
+      if (responseData.ret === 1) {
+        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+      } else {
+        // 确保数据结构正确
+        store.cartItems.value = responseData.books.map(book => ({
+          ...book,
+          authors: Array.isArray(book.authors) ? book.authors : [book.authors],
+          orderNumber: book.orderNumber || 1,
+          total: book.total || book.price * (book.orderNumber || 1)
+        }));
+      }
+    });
+};
 
 
 
-  </script>
-  
-  <style>
-  .cart {
-      max-height: 70vh;
-      overflow-y: auto;
-  }
-  
-  .cart-item {
-    display: flex;
-    justify-content: space-between; /* 使内容在行内均匀分布 */
-    align-items: center;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 15px;
+</script>
+
+<style>
+
+.rightmain-cart {
+  position: relative;
+  display: flex;
+  height: 98.5vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rightmain-cart .cart {
+  width: 100%;
+  flex-grow: 1;
+}
+
+.rightmain-cart .top {
+  margin-top: 5%;
+}
+
+.rightmain-cart .bottom{
+  width: 60%;
+  margin-bottom: 5%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: flex-end;
+  /* 使内容在行内均匀分布 */
+  align-items: center;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 15px;
 }
 
 .book-details {
-    display: flex;
-    flex-direction: column; /* 垂直排列 */
-    margin-left: 5%;
-}
-
-.detail {
+  flex-grow: 1;
   display: flex;
-  flex-direction:row; 
+  flex-direction: column;
+  /* 垂直排列 */
+  margin-left: 5%;
+  align-items: flex-start;
 }
 
-.price-quantity {
-    display: flex;
-    align-items: center; /* 垂直居中对齐 */
-    margin-right: 5%; /* 右侧间距 */
+.detail-1 {
+  display: flex;
+  flex-direction: row;
 }
 
-.quantity-control {
-    display: flex;
-    align-items: center; /* 垂直居中对齐 */
-    margin-left: 5%;
+.detail-2 {
+  display: flex;
+  flex-direction: row;
 }
 
-.quantity-control input {
-    width: 50px;
-    text-align: center;
-    margin: 0 5px; /* 左右间距 */
-}
-
-.total-delete {
-    display: flex;
-    flex-direction: column; /* 竖向排列 */
-    align-items: flex-end; /* 右对齐 */
-    margin-right: 5%;
-}
-
-.deleteBtn {
-    background-color: aqua;
+.book-control {
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .purchase {
-    background-color: aqua;
+  background-color: aqua;
 }
 
 .total {
-    margin-top: 20px;
-    font-size: 20px;
-    font-weight: bold;
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: bold;
 }
-.righttop {
-  background-color: aqua;
-}
-  </style>
-  
+</style>
