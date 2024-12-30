@@ -11,7 +11,7 @@
             <el-descriptions-item label="订单号">{{ order.Ono }}</el-descriptions-item>
             <el-descriptions-item label="总金额">{{ order.totalMoney }}</el-descriptions-item>
             <el-descriptions-item label="优惠金额">¥{{ order.discountMoney }}</el-descriptions-item>
-            <el-descriptions-item label="订单状态"> ¥{{ order.state }}</el-descriptions-item>
+            <el-descriptions-item label="订单状态"> {{ getState(order.state) }}</el-descriptions-item>
             <el-descriptions-item label="下单时间"> {{ order.orderTime }}</el-descriptions-item>
             <el-descriptions-item label="送货地址"> {{ order.deliveryAddress }}</el-descriptions-item>
           </el-descriptions>
@@ -39,9 +39,9 @@
           </div>
           <div class="order-actions">
             <!-- Ship Button -->
-            <el-button type="success" @click="shipOrder(order.Ono)">发货</el-button>
+            <el-button v-if="order.state === 'submitted'" type="success" @click="shipOrder(order.Ono)">发货</el-button>
             <!-- Arrive Button -->
-            <el-button type="primary" @click="arriveOrder(order.Ono)">到货</el-button>
+            <el-button v-if="order.state === 'delivery'" type="primary" @click="arriveOrder(order.Ono)">到货</el-button>
           </div>
         </div>
       </div>
@@ -62,6 +62,25 @@ import axios from 'axios';
 const store = mainStore();
 const orders = ref([]); // 保存订单数据
 
+
+const getState = (state) => {
+  let orderstate;
+  switch (state){
+    case 'submitted':
+      orderstate = '已支付';
+      break;
+    case 'delivery':
+      orderstate = '送货中';
+      break;
+    case 'finished':
+      orderstate = '已完成';
+      break;
+    default:
+      orderstate = '大笨蛋';
+      break;
+  }
+  return orderstate;
+}
 // 获取订单数据
 const getOrder = () => {
   axios({
@@ -180,11 +199,8 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.topinfo {
   font-size: 50px;
-  color: #fff;
+  margin-top: 5%;
 }
 
 .history-order {
@@ -223,4 +239,18 @@ hr {
 p strong {
   font-weight: bold;
 }
+
+::v-deep .el-collapse-item__header:focus, .el-collapse-item__header:focus-visible {
+    outline: none;
+}
+
+::v-deep .el-collapse-item__header {
+    margin-left: 0;
+}
+
+.order-actions {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
 </style>
