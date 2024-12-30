@@ -3,7 +3,7 @@
     <el-container>
       <el-aside width="20%">
         <div class="lefttop">
-          <el-avatar class="av" shape="square" :size="100" :src="misakaImg" alt="Misaka Mikoto" fit="cover" />
+          <el-avatar class="av" shape="square" :size="90" :src="misakaImg" alt="Misaka Mikoto" fit="cover" />
           <h2 class="username">{{ store.username }}</h2>
         </div>
         <el-menu default-active="2" class="el-menu-vertical-demo">
@@ -208,7 +208,7 @@ import {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0);
 }
 
 .lefttop {
