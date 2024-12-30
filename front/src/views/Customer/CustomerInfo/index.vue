@@ -28,6 +28,9 @@
                     {{ amount }}
                 </el-button>
             </div>
+            <div class="recharge_pic">
+                <el-avatar class="rechargeImg" shape="square" :size="90" :src="rechargeImg" alt="提示" fit="cover" />
+            </div>
             <div class="modal-actions">
                 <span class="modal-buttons">
                     <el-button class='botbtn' @click="isModalOpen = false">取消</el-button>
@@ -54,6 +57,7 @@ import axios from 'axios';
 import { ElMessage } from 'element-plus';
 import VantaBirds from '../../VantaBirds.vue';
 import QRcode from '../../../assets/images/QRcode.jpg'
+import rechargeImg from '../../../assets/images/recharge.png'
 const store = mainStore();
 const isEditing = ref({ username: false, address: false });
 const newUsername = ref(store.username);
@@ -253,5 +257,10 @@ button {
 }
 .botbtn {
     position: relative;
+}
+
+.rechargeImg {
+    width: 320px;
+    height: 320px;
 }
 </style>
