@@ -23,13 +23,13 @@
       <div v-else>
         <p>暂无缺货记录。</p>
       </div>
-
+      <div class="reg-sub-btn">
       <!-- Button to trigger modal -->
       <button @click="openModal" class="register-button">登记缺货订单</button>
 
       <!-- Button to submit selected orders -->
       <button @click="submitPurchaseOrder" class="submit-button">生成采购单</button>
-
+    </div>
       <!-- Modal for registering shortage order -->
       <el-dialog :model-value="isModalVisible" title="登记缺货订单" width="30%">
         <el-form :model="newOrder" ref="orderForm" label-width="100px">
@@ -256,8 +256,15 @@ p strong {
   font-weight: bold;
 }
 
+.reg-sub-btn {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-end;
+}
 .register-button {
+  position: relative;
   margin-top: 20px;
+  margin-right: 10px;
   padding: 10px 20px;
   background-color: #4caf50;
   color: white;
@@ -271,6 +278,7 @@ p strong {
 }
 
 .submit-button {
+  position: relative;
   margin-top: 20px;
   padding: 10px 20px;
   background-color: #007bff;
