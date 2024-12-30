@@ -53,7 +53,7 @@ const sendMessage = () => {
 
 </script>
 
-<style>
+<style scoped>
 .rightmain {
     position: relative;
     display: flex;

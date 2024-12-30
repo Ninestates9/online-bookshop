@@ -171,7 +171,7 @@ const getBookBrowser = () => {
 }
 </script>
 
-<style>
+<style scoped>
 .rightmain {
   position: relative;
   display: grid;

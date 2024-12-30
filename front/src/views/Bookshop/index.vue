@@ -43,7 +43,7 @@
           <el-footer>&copy; 2025 Online-bookshop. All rights reserved.</el-footer>
         </el-aside>
   
-        <el-main width="80%" height="100%">
+        <el-main width="80%" height="100%" style="padding: 0;">
           <router-view></router-view>
         </el-main>        
       </el-container>
@@ -91,7 +91,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .CustomerMain {
     left: 0%;
     top:0%;

@@ -78,7 +78,7 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .rightmain {
   position: relative;
   display: flex;

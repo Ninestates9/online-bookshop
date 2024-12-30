@@ -40,10 +40,10 @@
                     <el-input v-model="newVendor.Vaddress" />
                 </el-form-item>
                 <el-form-item label="书籍">
-                    <el-input v-model="newBook.Bno" placeholder="书号" />
-                    <el-input type="number" v-model="newBook.Bsubno" placeholder="丛书号" />
-                    <el-input v-model="newBook.state" placeholder="状态" />
-                    <el-button @click="addBook">添加书籍</el-button>
+                    <el-input v-model="newBook.Bno" placeholder="书号"/>
+                    <el-input type="number" v-model="newBook.Bsubno" placeholder="丛书号" style="margin-top: 20px;"/>
+                    <el-input v-model="newBook.state" placeholder="状态" style="margin-top: 20px;"/>
+                    <el-button @click="addBook" style="margin-top: 20px;">添加书籍</el-button>
                     <ul>
                         <li v-for="(book, index) in newVendor.books" :key="index">
                             书号: {{ book.Bno }}, 丛书号: {{ book.Bsubno }}, 状态: {{ book.state }}
@@ -52,10 +52,10 @@
                     </ul>
                 </el-form-item>
             </el-form>
-            <span slot="footer" class="dialog-footer">
+            <div class="dialog-footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="addProvider">确 定</el-button>
-            </span>
+            </div>
         </el-dialog>
     </div>
 </template>
@@ -218,7 +218,9 @@ button {
 }
 
 .dialog-footer {
-    text-align: right;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
 }
 
 </style>

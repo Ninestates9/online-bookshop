@@ -198,7 +198,7 @@ const getCartBook = () => {
 
 </script>
 
-<style>
+<style scoped>
 
 .rightmain-cart {
   position: relative;
