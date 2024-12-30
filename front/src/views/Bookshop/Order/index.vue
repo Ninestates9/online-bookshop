@@ -1,6 +1,6 @@
 <template>
-  <div class="rightmain">
-    <div class="righttop">
+  <div class="m-order-rightmain">
+    <div class="m-order-righttop">
       <h3 class="topinfo">订单</h3>
     </div>
     <div class="history-order">
@@ -184,7 +184,7 @@ onMounted(() => {
 
 
 <style scoped>
-.rightmain {
+.m-order-rightmain {
   position: relative;
   display: grid;
   grid-template-rows: 15% 85%;
@@ -193,7 +193,7 @@ onMounted(() => {
   overflow: hidden;
 }
 
-.righttop {
+.m-order-righttop {
   width: 100%;
   height: 100%;
   display: flex;
