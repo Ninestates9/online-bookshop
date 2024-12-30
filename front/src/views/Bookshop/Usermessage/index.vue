@@ -9,7 +9,7 @@
             <el-descriptions-item label="账号" label-width="50px">{{ message.Uno }}</el-descriptions-item>
             <el-descriptions-item label="消息">{{ message.message }}</el-descriptions-item>
         </el-descriptions>
-        <button class="delete-btn" @click="deleteUserMessage(message.Uno)">删除留言</button>
+        <button class="delete-btn" @click="deleteUserMessage(message.Uno)"><el-icon><Delete /></el-icon></button>
       </div>
     </div>
   </div>
@@ -114,6 +114,7 @@ onMounted(() => {
 }
 
 .message {
+  display: flex;
   display: grid;
   grid-template-columns: 92% 8%;
 }
@@ -123,7 +124,15 @@ onMounted(() => {
 }
 
 button {
-  margin-left: 10px;
+  align-items: center;
   background-color: aqua;
+}
+
+.delete-btn {
+  width: 60px; 
+  display: flex;
+  align-items: center;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
 }
 </style>
