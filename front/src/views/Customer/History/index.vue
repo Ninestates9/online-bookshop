@@ -10,7 +10,7 @@
         <div class="history-order">
           <el-descriptions :border="true" column="2" class="order-header" size="large">
             <el-descriptions-item label="订单时间">{{ order.orderTime }}</el-descriptions-item>
-            <el-descriptions-item label="订单状态">{{ order.state }}</el-descriptions-item>
+            <el-descriptions-item label="订单状态">{{ getState(order.state) }}</el-descriptions-item>
             <el-descriptions-item label="总金额">¥{{ order.totalMoney }}</el-descriptions-item>
             <el-descriptions-item label="优惠金额"> ¥{{ order.discountMoney }}</el-descriptions-item>
             <el-descriptions-item label="收货地址"> {{ order.deliveryAddress }}</el-descriptions-item>
@@ -44,6 +44,24 @@ import { ElMessage } from 'element-plus';
 import VantaBirds from '../../VantaBirds.vue';
 const store = mainStore();
 
+const getState = (state) => {
+  let orderstate;
+  switch (state){
+    case 'submitted':
+      orderstate = '已支付';
+      break;
+    case 'delivery':
+      orderstate = '送货中';
+      break;
+    case 'finished':
+      orderstate = '已完成';
+      break;
+    default:
+      orderstate = '大笨蛋';
+      break;
+  }
+  return orderstate;
+}
 
 const orders = ref([ // 将 orders 声明为响应式引用
   {
