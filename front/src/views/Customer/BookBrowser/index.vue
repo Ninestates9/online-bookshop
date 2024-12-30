@@ -191,19 +191,13 @@ const getBookBrowser = () => {
 .input-with-select {
     max-width: 600px;
     margin-top: 5%;
+    background-color: #ffffff7b;
 }
 
-.searchbox {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background-color: rgba(91, 247, 1, 0.421);
-  width: 100%;
-  height: 50%;
-  padding: 10px;
-  overflow: hidden;
-}
 
+.mt-4 {
+  background-color: #ffffff7b;
+}
 .search-input {
   width: 80%;
   padding: 10px;
@@ -267,6 +261,7 @@ const getBookBrowser = () => {
   /* 阴影效果 */
   box-sizing: border-box;
   /* 包含边距和填充在宽高内 */
+  background-color: #ffffff7b;
 }
 
 .book-cover {
@@ -278,6 +273,7 @@ const getBookBrowser = () => {
 .book-mini-card{
   display: flex;
   flex-direction: column;
+  
 }
 
 .book-info {
