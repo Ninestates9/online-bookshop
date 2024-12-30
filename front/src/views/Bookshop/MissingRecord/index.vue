@@ -7,16 +7,16 @@
       <!-- Loop through shortageSet and display the details -->
       <div v-if="shortageSet.length > 0" class="order-list">
         <div v-for="(order, index) in shortageSet" :key="index" class="order-item">
-          <el-checkbox v-model="selectedOrders" :label="order.Sno">
-            <el-descriptions :border="true"  column="3" >
-            <el-descriptions-item label="订单号" label-width="100px">{{ order.Sno }}</el-descriptions-item>
-            <el-descriptions-item label="书号">{{ order.Bno }}</el-descriptions-item>
-            <el-descriptions-item label="丛书号">{{ order.Bsubno }}</el-descriptions-item>
-            <el-descriptions-item label="书名">{{ order.Bname }}</el-descriptions-item>
-            <el-descriptions-item label="用户编号">{{ order.Uno }}</el-descriptions-item>
-            <el-descriptions-item label="缺货数量">{{ order.insufficientNumber }}</el-descriptions-item>
-            <el-descriptions-item label="缺货时间">{{ order.time }}</el-descriptions-item>
-        </el-descriptions>
+          <el-checkbox v-model="selectedOrders" :label="order.Sno" size="large">
+            <el-descriptions :border="true" column="3" style="width: 100%;">
+              <el-descriptions-item label="订单号" label-width="100px">{{ order.Sno }}</el-descriptions-item>
+              <el-descriptions-item label="书号" label-width="100px">{{ order.Bno }}</el-descriptions-item>
+              <el-descriptions-item label="丛书号" label-width="100px">{{ order.Bsubno }}</el-descriptions-item>
+              <el-descriptions-item label="书名" label-width="100px">{{ order.Bname }}</el-descriptions-item>
+              <el-descriptions-item label="用户编号" label-width="100px">{{ order.Uno }}</el-descriptions-item>
+              <el-descriptions-item label="缺货数量" label-width="100px">{{ order.insufficientNumber }}</el-descriptions-item>
+              <el-descriptions-item label="缺货时间" label-width="100px">{{ order.time }}</el-descriptions-item>
+            </el-descriptions>
           </el-checkbox>
         </div>
       </div>
@@ -54,7 +54,7 @@
 </template>
 
 
-  
+
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { mainStore } from '../../../store/index.ts';
@@ -110,7 +110,7 @@ const closeModal = () => {
 // Function to submit the order
 const submitOrder = () => {
   // Validate required fields
-  if (!newOrder.value.Bno || !newOrder.value.Bsubno  || !newOrder.value.insufficientNumber) {
+  if (!newOrder.value.Bno || !newOrder.value.Bsubno || !newOrder.value.insufficientNumber) {
     ElMessage.error('请填写所有字段');
     return;
   }
@@ -185,7 +185,7 @@ onMounted(() => {
 
 
 
-  
+
 <style scoped>
 .rightmain {
   position: relative;
@@ -233,18 +233,25 @@ onMounted(() => {
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
-  display: flex; /* 使用 flexbox 布局 */
-  flex-direction: column; /* 纵向排列内容 */
-  min-height: 120px; /* 设置最小高度 */
+  display: flex;
+  /* 使用 flexbox 布局 */
+  flex-direction: column;
+  /* 纵向排列内容 */
+  min-height: 120px;
+  /* 设置最小高度 */
   justify-content: center;
 }
 
 
 .el-checkbox__label p {
-  margin: 5px 0; /* 设置段落之间的间距 */
-  overflow: hidden; /* 隐藏溢出 */
-  text-overflow: ellipsis; /* 使用省略号表示溢出文本 */
-  white-space: nowrap; /* 不换行 */
+  margin: 5px 0;
+  /* 设置段落之间的间距 */
+  overflow: hidden;
+  /* 隐藏溢出 */
+  text-overflow: ellipsis;
+  /* 使用省略号表示溢出文本 */
+  white-space: nowrap;
+  /* 不换行 */
 }
 
 hr {
@@ -283,4 +290,15 @@ p strong {
 .submit-button:hover {
   background-color: #0056b3;
 }
+
+::v-deep .el-checkbox {
+  width: 100%;
+  display: flex;
+}
+
+::v-deep .el-checkbox__label {
+  width: 80%;
+  flex-grow: 1;
+}
+
 </style>
