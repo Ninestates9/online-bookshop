@@ -16,7 +16,7 @@
             <el-descriptions-item label="收货地址"> {{ order.deliveryAddress }}</el-descriptions-item>
           </el-descriptions>
           <div class="order-details">
-            <el-collapse v-model="activeNames" @change="handleChange" class="board">
+            <el-collapse class="board">
               <el-collapse-item title="书籍列表" name="1" class="booklist">
                 <el-table :data="order.books" class="book-table">
                   <el-table-column prop="Bname" label="书名" />
@@ -157,6 +157,14 @@ onMounted(() => {
 
 .order-header {
   width: 90%;
+}
+
+::v-deep .el-collapse-item__header:focus, .el-collapse-item__header:focus-visible {
+    outline: none;
+}
+
+::v-deep .el-collapse-item__header {
+    margin-left: 0;
 }
 
 </style>
