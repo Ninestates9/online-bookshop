@@ -6,31 +6,35 @@
     <div class="userinfo">
       <div v-for="user in users" :key="user.Uno" class="user-info">
 
-        <el-descriptions :border="true"  column="1" size="large">
-            <el-descriptions-item label="账号" label-width="100px">{{ user.Uno }}</el-descriptions-item>
-            <el-descriptions-item label="昵称">{{ user.Uname }}</el-descriptions-item>
-            <el-descriptions-item label="地址">{{ user.address }}</el-descriptions-item>
-            <el-descriptions-item label="余额">{{ user.balance }}</el-descriptions-item>
-            <el-descriptions-item label="消费数额">{{ user.total }}</el-descriptions-item>
-            <el-descriptions-item label="信用等级">{{ user.level }}</el-descriptions-item>
+        <el-descriptions :border="true" column="2" size="large">
+          <el-descriptions-item label="账号" label-width="120px">{{ user.Uno }}</el-descriptions-item>
+          <el-descriptions-item label="昵称" label-width="120px">{{ user.Uname }}</el-descriptions-item>
         </el-descriptions>
-        <button @click="openDialog(user)">修改信用等级</button>
+        <el-descriptions :border="true" column="1" size="large">
+          <el-descriptions-item label="地址" label-width="120px">{{ user.address }}</el-descriptions-item>
+        </el-descriptions>
+        <el-descriptions :border="true" column="3" size="large">
+          <el-descriptions-item label="余额" label-width="120px">{{ user.balance }}</el-descriptions-item>
+          <el-descriptions-item label="消费数额" label-width="120px">{{ user.total }}</el-descriptions-item>
+          <el-descriptions-item label="信用等级" label-width="120px">
+            <div class="m-userinfo-inline">
+              <span>{{ user.level }}</span>
+              <el-button @click="openDialog(user)">修改信用等级</el-button>
+            </div>
+          </el-descriptions-item>
+        </el-descriptions>
       </div>
     </div>
 
     <!-- 修改信用等级的对话框 -->
-    <el-dialog v-model="isDialogVisible" title="修改信用等级">
-      <el-input
-        v-model="newCreditLevel"
-        type="number"
-        placeholder="请输入新的信用等级"
-        :min="0"
-        :max="10"
-      ></el-input>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="isDialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="submitCreditLevel">确定</el-button>
-      </span>
+    <el-dialog v-model="isDialogVisible" title="修改信用等级" center>
+      <div class="m-dialog-userInfo">
+        <el-input v-model="newCreditLevel" type="number" placeholder="请输入新的信用等级" :min="0" :max="10" style="width: 60%; margin-bottom: 5%;margin-top: 5%;"></el-input>
+        <span class="dialog-footer">
+          <el-button size="large" @click="isDialogVisible = false">取消</el-button>
+          <el-button size="large" type="primary" @click="submitCreditLevel">确定</el-button>
+        </span>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -60,18 +64,18 @@ const getUserInfo = () => {
     url: `${store.ip}/api/getUserInfo`,
     headers: { 'Content-Type': 'multipart/form-data' }
   })
-  .then(response => {
-    let responseData = response.data;
-    if (responseData.ret === 1) {
-      ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-    } else {
-      users.value = responseData.userInfo; // 假设 responseData.userinfo 是用户信息数组
-    }
-  })
-  .catch(error => {
-    console.error('获取用户信息失败:', error);
-    ElMessage({ message: '获取用户信息失败', type: 'error', duration: 5 * 1000, grouping: true });
-  });
+    .then(response => {
+      let responseData = response.data;
+      if (responseData.ret === 1) {
+        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+      } else {
+        users.value = responseData.userInfo; // 假设 responseData.userinfo 是用户信息数组
+      }
+    })
+    .catch(error => {
+      console.error('获取用户信息失败:', error);
+      ElMessage({ message: '获取用户信息失败', type: 'error', duration: 5 * 1000, grouping: true });
+    });
 };
 
 const isDialogVisible = ref(false); // 控制对话框显示
@@ -171,17 +175,42 @@ onMounted(() => {
 .userinfo {
   padding: 20px;
   font-size: 18px;
-  text-align: left; /* 确保文本左对齐 */
+  text-align: left;
+  /* 确保文本左对齐 */
   overflow-y: auto;
 }
 
 
 .user-info {
-  margin-bottom: 20px; /* 添加用户信息之间的间距 */
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 40px;
 }
 
 button {
   margin-left: 10px;
   background-color: aqua;
+}
+
+.m-userinfo-inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.m-dialog-userInfo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.dialog-footer {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 5%;
 }
 </style>
