@@ -24,14 +24,20 @@
     <div class="bookbrowser">
       <vanta-birds />
       <el-card @click="openPurchaseModal(book)" v-for="book in books" :key="book.Bno" class="book-card">
+        <div class="book-mini-card">
         <img :src="store.ip + '/cover/' + book.cover" alt="书本封面" class="book-cover" />
         <div class="book-info">
-          <h3>{{ book.Bname }}</h3>
-          <p>{{ book.authors.join(' ') }}</p>
-          <p>{{ book.keys.join(' ') }}</p>
-          <p> {{ book.press }}</p>
+          <div class="book-info-left">
+            <div class="book-info-bookname">{{ book.Bname }}</div>
+            <div>{{ book.authors.join(' ') }}</div>
+            <div>{{ book.keys.join(' ') }}</div>
+            <div> {{ book.press }}</div>
+          </div>
+          <div class="book-info-right">
+            <strong class="price">¥{{ book.price }}</strong>
+          </div>
         </div>
-        <strong class="price">¥{{ book.price }}</strong>
+        </div>
       </el-card>
       <el-dialog v-model="isModalOpen" title="书籍详情">
         <el-descriptions :border="true" column="3">
@@ -264,26 +270,32 @@ const getBookBrowser = () => {
 
 .book-cover {
   width: 100%;
-  /* 充满宽度 */
   height: 300px;
-  /* 固定高度 */
   object-fit: cover;
-  /* 保持比例并覆盖 */
+}
+
+.book-mini-card{
+  display: flex;
+  flex-direction: column;
 }
 
 .book-info {
+  margin-top: 5%;
+  margin-bottom: 5%;
   display: flex;
-  /* 使用 flexbox 进行布局 */
-  flex-wrap: wrap;
-  /* 允许换行 */
-
-  justify-content: flex-start;
-  line-height: 0px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.book-info p {
-  margin-left: 10px;
-  /* 每个属性之间的间距 */
+.book-info-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.book-info-bookname {
+  font-size: 25px;
 }
 
 .price {
@@ -301,4 +313,5 @@ const getBookBrowser = () => {
   height: auto;
   margin-bottom: 10px;
 }
+
 </style>
