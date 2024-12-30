@@ -1,19 +1,24 @@
 <template>
-    <div class="rightmain">
+    <div class="m-storage-rightmain">
         <div class="righttop">
             <h3 class="topinfo">库存</h3>
         </div>
-        <div class="storage">
+        <el-scroller class="storage">
             <el-card @click="openPurchaseModal(book)" v-for="(book, index) in storageItems" :key="book.Bno"
                 class="book-card">
-                <img :src="`${store.ip}/cover/${book.cover}`" alt="书本封面" class="book-cover" />
-                <div class="book-details">
-                    <p style="font-weight: bold;">{{ book.Bname }}</p>
-                    <p>作者: {{ book.authors.join('  ') }}</p>
-                    <p>出版社: {{ book.press }}</p>
-                    <p>价格: {{ book.price}}</p>
-                    <p>库存量: {{ book.quantity }}</p>
-
+                <div class="m-book-info">
+                    <img :src="`${store.ip}/cover/${book.cover}`" alt="书本封面" class="book-cover" />
+                    <div class="m-book-details">
+                        <div class="m-book-left">
+                            <div style="font-weight: bold;">{{ book.Bname }}</div>
+                            <div>作者: {{ book.authors.join(' ') }}</div>
+                            <div>出版社: {{ book.press }}</div>
+                        </div>
+                        <div class="m-book-right">
+                            <div>价格: {{ book.price }}</div>
+                            <div>库存量: {{ book.quantity }}</div>
+                        </div>
+                    </div>
                 </div>
             </el-card>
             <el-dialog v-model="isModalOpen" title="书籍详情">
@@ -33,22 +38,22 @@
 
 
                 </el-descriptions>
-                <template #footer>
+                <div class="m-footer">
                     <div class="price-control">
-                    <label>价格: ¥</label>
-                    <input type="number" v-model.number="selectedBook.price" min="0" />
-                    <el-button size="small" @click="updatePrice(selectedBook)">更新价格</el-button>
-                </div>
+                        <label>价格: ¥</label>
+                        <input type="number" v-model.number="selectedBook.price" min="0" />
+                        <el-button size="default" @click="updatePrice(selectedBook)">更新价格</el-button>
+                    </div>
                     <el-button @click="isModalOpen = false">关闭</el-button>
-                    <el-button @click="deleteBook(selectedBook.Bno, selectedBook.Bsubno)" class="deleteBtn">删除图书</el-button>
-
-                </template>
+                    <el-button @click="deleteBook(selectedBook.Bno, selectedBook.Bsubno)"
+                        class="deleteBtn">删除图书</el-button>
+                </div>
             </el-dialog>
-        </div>
+        </el-scroller>
 
         <!-- 添加书目按钮 -->
         <div class="add-button-container">
-            <el-button type="primary" @click="showDialog">添加书目</el-button>
+            <el-button size="large" type="primary" @click="showDialog">添加书目</el-button>
         </div>
 
         <el-dialog title="添加新书籍" :model-value="dialogVisible">
@@ -324,94 +329,103 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.rightmain {
-    position: relative;
-    display: grid;
-    height: 98.5vh;
+.m-storage-rightmain {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     width: 100%;
-    grid-template-rows: 15% 77% 8%;
+    justify-content: center;
+    align-items: center;
 }
 
 .righttop {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
+    font-size: 30px;
 }
 
 .storage {
-    padding: 20px;
     display: flex;
     flex-wrap: wrap;
-    /* 允许换行 */
-    gap: 20px;
-    /* 卡片之间的间距 */
     overflow-y: auto;
+    width: 100%;
+    flex-grow: 1;
 }
 
 
 
 .book-card {
-  flex: 0 1 calc(23% - 8px);
-  /* 每个卡片占据三分之一的宽度，减去边距 */
-  display: flex;
-  flex-direction: column;
-  /* 垂直排列内容 */
-  justify-content: space-between;
-  /* 内容均匀分布 */
-  height: 450px;
-  /* 固定高度 */
-  margin: 5px;
-  /* 卡片之间的间距 */
-  border-radius: 8px;
-  /* 圆角 */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* 阴影效果 */
-  box-sizing: border-box;
-  /* 包含边距和填充在宽高内 */
+    flex: 0 1 calc(23% - 8px);
+    /* 每个卡片占据三分之一的宽度，减去边距 */
+    display: flex;
+    flex-direction: column;
+    /* 垂直排列内容 */
+    justify-content: space-between;
+    /* 内容均匀分布 */
+    height: 450px;
+    /* 固定高度 */
+    margin: 5px;
+    /* 卡片之间的间距 */
+    border-radius: 8px;
+    /* 圆角 */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    /* 阴影效果 */
+    box-sizing: border-box;
+    /* 包含边距和填充在宽高内 */
 }
 
 .book-cover {
-  width: 100%;
-  /* 充满宽度 */
-  height: 300px;
-  /* 固定高度 */
-  object-fit: cover;
-  /* 保持比例并覆盖 */
+    width: 100%;
+    /* 充满宽度 */
+    height: 300px;
+    /* 固定高度 */
+    object-fit: cover;
+    /* 保持比例并覆盖 */
 }
 
 .price-control {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     margin-top: 5px;
+    width: 60%;
+    justify-content:center;
+    font-size: large;
 }
 
 .price-control input {
     width: 80px;
-    margin-left: 10px;
+    margin-left: 5%;
+    margin-right: 5%;
     text-align: center;
+    font-size: large;
 }
 
-.book-details {
-  display: flex;
-  /* 使用 flexbox 进行布局 */
-  flex-wrap: wrap;
-  /* 允许换行 */
-
-  justify-content: flex-start;
-  line-height: 0px;
+.m-book-info {
+    display: flex;
+    flex-direction: column;
 }
 
-.book-details p {
-  margin-left: 10px;
-  /* 每个属性之间的间距 */
+.m-book-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.m-book-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.m-book-details {
+    margin-top: 10%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
 }
 
 .add-button-container {
     padding: 20px;
-    /* 添加适当的内边距 */
     text-align: center;
-    /* 按钮居中 */
+    margin-bottom: 5%;
 }
 
 .upload-demo {
@@ -421,4 +435,13 @@ onMounted(() => {
 button {
     background-color: aqua;
 }
+
+.m-footer {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
 </style>
