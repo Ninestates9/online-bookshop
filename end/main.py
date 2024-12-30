@@ -103,7 +103,7 @@ def processBookOrder(p_cursor, p_Ono, p_level, p_Uno):
             insufficientNumber = orderNumber - quantity 
             f_registerShortage(p_cursor, Bno, Bsubno, p_Uno, insufficientNumber)
     rate = [0.1, 0.15, 0.15, 0.2, 0.25]
-    discountMoney = totalMoney * rate[p_level + 1]
+    discountMoney = totalMoney * (1 - rate[p_level + 1])
     return totalMoney, discountMoney
 
 def f_registerShortage(cursor, Bno, Bsubno, Uno, insufficientNumber):
