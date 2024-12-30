@@ -14,7 +14,8 @@
               <el-descriptions-item label="丛书号" label-width="100px">{{ order.Bsubno }}</el-descriptions-item>
               <el-descriptions-item label="书名" label-width="100px">{{ order.Bname }}</el-descriptions-item>
               <el-descriptions-item label="用户编号" label-width="100px">{{ order.Uno }}</el-descriptions-item>
-              <el-descriptions-item label="缺货数量" label-width="100px">{{ order.insufficientNumber }}</el-descriptions-item>
+              <el-descriptions-item label="缺货数量" label-width="100px">{{ order.insufficientNumber
+                }}</el-descriptions-item>
               <el-descriptions-item label="缺货时间" label-width="100px">{{ order.time }}</el-descriptions-item>
             </el-descriptions>
           </el-checkbox>
@@ -24,14 +25,14 @@
         <p>暂无缺货记录。</p>
       </div>
       <div class="reg-sub-btn">
-      <!-- Button to trigger modal -->
-      <button @click="openModal" class="register-button">登记缺货订单</button>
+        <!-- Button to trigger modal -->
+        <button @click="openModal" class="register-button">登记缺货订单</button>
 
-      <!-- Button to submit selected orders -->
-      <button @click="submitPurchaseOrder" class="submit-button">生成采购单</button>
-    </div>
+        <!-- Button to submit selected orders -->
+        <button @click="submitPurchaseOrder" class="submit-button">生成采购单</button>
+      </div>
       <!-- Modal for registering shortage order -->
-      <el-dialog :model-value="isModalVisible" title="登记缺货订单" width="30%">
+      <el-dialog :model-value="isModalVisible" title="登记缺货订单" style="width: 50%;" center>
         <el-form :model="newOrder" ref="orderForm" label-width="100px">
           <el-form-item label="书号">
             <el-input v-model="newOrder.Bno" placeholder="请输入书号" required></el-input>
@@ -268,10 +269,11 @@ p strong {
   flex-grow: 1;
   justify-content: flex-end;
 }
+
 .register-button {
   position: relative;
   margin-top: 20px;
-  margin-right: 10px;
+  margin-right: 20px;
   padding: 10px 20px;
   background-color: #4caf50;
   color: white;
@@ -307,6 +309,11 @@ p strong {
 ::v-deep .el-checkbox__label {
   width: 80%;
   flex-grow: 1;
+}
+
+.dialog-footer {
+  display: flex;
+  justify-content:space-around;
 }
 
 </style>
