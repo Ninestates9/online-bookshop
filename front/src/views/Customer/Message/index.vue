@@ -1,0 +1,91 @@
+<template>
+    <div class="rightmain">
+        <VantaBirds />
+        <div class="righttop">
+            <h3 class="topinfo">留言</h3>
+        </div>
+        <div class="message">
+            <el-input v-model="textarea" style="width: 100%" :rows="2" type="textarea" placeholder="请输入留言" />
+            <el-button @click="sendMessage">发送留言</el-button>
+        </div>
+    </div>
+</template>
+
+<script lang="ts" setup>
+import { ref, onBeforeUnmount } from 'vue';
+import { mainStore } from '../../../store/index.ts';
+import axios from 'axios';
+import { ElMessage } from 'element-plus';
+import VantaBirds from '../../VantaBirds.vue';
+
+const store = mainStore();
+const textarea = ref('');
+const sendMessage = () => {
+    let formData = new FormData();
+    formData.append('Uno', store.userid);
+    formData.append('message', textarea.value);
+    axios({
+        method: 'post',
+        url: `${store.ip}/api/sendMsg`,
+        data: formData,
+        headers: { 'Content-Type': 'multipart/form-data' }
+    }
+    )
+        .then(response => {
+            let responseData = response.data;
+            if (responseData.ret === 1) {
+                ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+            }
+            else {
+                ElMessage.success('留言发送成功');
+                textarea.value = '';
+            }
+        });
+}
+
+
+
+
+</script>
+
+<style>
+.rightmain {
+    position: relative;
+    display: flex;
+    height: 98.5vh;
+    width: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: 15% 85%;
+}
+
+.righttop {
+    position: relative;
+    overflow: hidden;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0);
+    width: 100%;
+    height: 100%;
+    color: black;
+}
+
+.topinfo {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    font-size: 30px;
+}
+
+.message {
+    width: 90%;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 10px;
+}
+
+button {
+    margin-left: 10px;
+    background-color: aqua;
+}
+</style>

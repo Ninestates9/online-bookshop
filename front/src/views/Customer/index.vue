@@ -23,7 +23,7 @@
             <el-icon><Tickets /></el-icon>
               <span id="History">历史订单</span>
           </el-menu-item>
-          <el-menu-item index="5" @click="showDialog()">
+          <el-menu-item index="5" @click="navigateTo('Message')">
             <el-icon><Message /></el-icon>
             <span id="Message" >留言</span>
           </el-menu-item>
@@ -56,28 +56,8 @@ function navigateTo(componentName) {
   // 路由导航
   router.push({ name: componentName });
 
-  // // 获取当前选中的按钮
-  // let currentButton = document.getElementById(componentName);
-  // const buttons = document.querySelectorAll('.nav-button'); // 假设按钮有类 'nav-button'
-
-  // // 设置当前按钮的样式（例如背景颜色和文本颜色）
-  // if (currentButton) {
-  //     currentButton.style.backgroundColor = '#007bff'; // 设置选中的按钮背景色
-  //     currentButton.style.color = '#ffffff'; // 设置选中按钮的文本颜色
-  // }
-
-  // // 重置其他按钮的样式
-  // buttons.forEach(button => {
-  //     if (button.id !== componentName) {
-  //         button.style.backgroundColor = ''; // 重置为默认背景色
-  //         button.style.color = ''; // 重置为默认文本颜色
-  //     }
-  // });
 }
-const showDialog = () => {
-  console.log('添加书目按钮被点击');
-  dialogVisible.value = true;
-};
+
 const logout = () => {
   // 确保 cartItems 是有效且非空的
   if (store.cartItems.value && Array.isArray(store.cartItems.value)) {
@@ -115,30 +95,9 @@ const logout = () => {
   }
 };
 
-const dialogVisible = ref(false);
 
-const sendMessage = () => {
-  let formData = new FormData();
-  formData.append('Uno', store.userid);
-  formData.append('message', message.value);
-  axios({
-    method: 'post',
-    url: `${store.ip}/api/sendMsg`,
-    data: formData,
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }
-  )
-    .then(response => {
-      let responseData = response.data;
-      if (responseData.ret === 1) {
-        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
-      }
-      else {
-        getuserinfo();
-      }
-    });
-  dialogVisible.value = false;
-}
+
+
 
 
 const getuserinfo = () => {
