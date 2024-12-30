@@ -51,38 +51,44 @@
   </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import misakaImg from '../../assets/images/vex.jpg';
 import { mainStore } from '../../store/index.ts';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 const store = mainStore();
 const router = useRouter();
 
 function navigateTo(componentName) {
     // 路由导航
     router.push({ name: componentName });
-
-    // // 获取当前选中的按钮
-    // let currentButton = document.getElementById(componentName);
-    // const buttons = document.querySelectorAll('.nav-button'); // 假设按钮有类 'nav-button'
-
-    // // 设置当前按钮的样式（例如背景颜色和文本颜色）
-    // if (currentButton) {
-    //     currentButton.style.backgroundColor = '#007bff'; // 设置选中的按钮背景色
-    //     currentButton.style.color = '#ffffff'; // 设置选中按钮的文本颜色
-    // }
-
-    // // 重置其他按钮的样式
-    // buttons.forEach(button => {
-    //     if (button.id !== componentName) {
-    //         button.style.backgroundColor = ''; // 重置为默认背景色
-    //         button.style.color = ''; // 重置为默认文本颜色
-    //     }
-    // });
 }
 const logout = () => {
     router.push({path:'/SignIn'})
 }
+
+const getuserinfo = () => {
+  let uno = new FormData();
+  uno.append('Uno', store.userid)
+  axios({
+    method: 'post',
+    url: `${store.ip}/api/getInfo`,
+    data: uno,
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }
+  )
+    .then(response => {
+      let responseData1 = response.data;
+      store.username = responseData1.info.Uname;
+      store.userlevel = responseData1.info.level;
+      store.address = responseData1.info.address;
+      store.balance = responseData1.info.balance;
+    })
+}
+onMounted(() => {
+  getuserinfo();
+
+});
 </script>
 
 <style>

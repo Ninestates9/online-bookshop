@@ -1,6 +1,6 @@
 <template>
     <div class="m-storage-rightmain">
-        <div class="righttop">
+        <div class="m-righttop">
             <h3 class="topinfo">库存</h3>
         </div>
         <el-scroller class="storage">
@@ -338,7 +338,7 @@ onMounted(() => {
     align-items: center;
 }
 
-.righttop {
+.m-righttop {
     font-size: 30px;
 }
 
