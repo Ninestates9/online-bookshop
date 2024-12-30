@@ -1,5 +1,6 @@
 <template>
     <div class="CustomerMain">
+      <VantaBirds />
       <el-container>
         <el-aside width="20%">
           <div class="lefttop">
@@ -56,6 +57,7 @@ import misakaImg from '../../assets/images/vex.jpg';
 import { mainStore } from '../../store/index.ts';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import VantaBirds from '../VantaBirds.vue';
 const store = mainStore();
 const router = useRouter();
 

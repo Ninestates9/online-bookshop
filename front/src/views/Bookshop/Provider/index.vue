@@ -1,6 +1,5 @@
 <template>
     <div class="m-vendor-rightmain">
-        <VantaBirds />
         <div class="m-vendor-righttop">
             <h3 class="topinfo">供应商</h3>
         </div>

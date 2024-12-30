@@ -1,6 +1,5 @@
 <template>
   <div class="rightmain">
-    <VantaBirds />
     <div class="righttop">
       <h3 class="topinfo">缺书记录</h3>
     </div>

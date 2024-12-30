@@ -1,6 +1,5 @@
 <template>
   <div class="m-order-rightmain">
-    <VantaBirds />
     <div class="m-order-righttop">
       <h3 class="topinfo">订单</h3>
     </div>

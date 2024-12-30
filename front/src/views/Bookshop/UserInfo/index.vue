@@ -1,6 +1,5 @@
 <template>
   <div class="rightmain">
-    <VantaBirds />
     <div class="righttop">
       <h3 class="topinfo">用户信息</h3>
     </div>

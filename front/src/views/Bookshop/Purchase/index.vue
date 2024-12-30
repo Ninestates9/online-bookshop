@@ -1,6 +1,5 @@
 <template>
   <div class="rightmain">
-    <VantaBirds />
     <div class="righttop">
       <h3 class="topinfo">采购单</h3>
     </div>

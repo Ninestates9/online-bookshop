@@ -1,6 +1,5 @@
 <template>
     <div class="m-storage-rightmain">
-        <VantaBirds />
         <div class="m-righttop">
             <h3 class="topinfo">库存</h3>
         </div>
