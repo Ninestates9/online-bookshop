@@ -190,6 +190,11 @@ import {
   background-color: rgba(232, 251, 255, 0.229);
 
 }
+
+:deep(.el-input__inner) {
+  margin-bottom: 5px;
+}
+
 :deep(.switchIcon){
   color: red;
 }
