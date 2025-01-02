@@ -201,6 +201,10 @@ onMounted(() => {
   --el-table-tr-bg-color: #a4dafd67;
 }
 
+:deep(.el-table__empty-block) {
+  background-color: #a4dafd67;
+}
+
 :deep(.el-table__header) {
   --el-table-header-bg-color: #64c3ff58;
 }
