@@ -75,23 +75,23 @@ const getDiscount = (totalPrice) => {
 
   switch (store.userlevel) {
     case 1:
-      discount = 0;
+      discount = 0.1;
       store.overdraft = 0; // 0% 折扣
       break;
     case 2:
-      discount = 0.05;
+      discount = 0.15;
       store.overdraft = 0; // 5% 折扣
       break;
     case 3:
-      discount = 0.1;
+      discount = 0.15;
       store.overdraft = 100; // 10% 折扣
       break;
     case 4:
-      discount = 0.15;
+      discount = 0.2;
       store.overdraft = 500; // 15% 折扣
       break;
     case 5:
-      discount = 0.2;
+      discount = 0.25;
       store.overdraft = 99999999999; // 20% 折扣
       break;
     default:
