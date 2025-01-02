@@ -107,19 +107,24 @@ def processBookOrder(p_cursor, p_Ono, p_level, p_Uno):
     return totalMoney, discountMoney
 
 def f_registerShortage(cursor, Bno, Bsubno, Uno, insufficientNumber):
+    flag = 0
     sql = f"select Sno, Pno from shortage where Bno = '{Bno}' and Bsubno = {Bsubno};"
     cursor.execute(sql)
     result_out = cursor.fetchall()
     if result_out == None:
         sql = f"insert into shortage(Bno, Bsubno, Uno, insufficientNumber, purchaseTime) values('{Bno}', {Bsubno}, '{Uno}', {insufficientNumber}, now());"
         cursor.execute(sql)
-    for result in result_out:
-        if result[1] == 0:
-            continue    
-        else:
-            Sno = result[0]
-            sql = f"update shortage set insufficientNumber = insufficientNumber + {insufficientNumber}, Uno = '{Uno}' where Sno = {Sno};"
-            cursor.execute(sql)
+    else:
+        for result in result_out:
+            if result[1] != -1:
+                Sno = result[0]
+                sql = f"update shortage set insufficientNumber = insufficientNumber + {insufficientNumber}, Uno = '{Uno}' where Sno = {Sno};"
+                cursor.execute(sql)
+                flag = 1
+                break
+        if flag == 0:
+            sql = f"insert into shortage(Bno, Bsubno, Uno, insufficientNumber, purchaseTime) values('{Bno}', {Bsubno}, '{Uno}', {insufficientNumber}, now());"
+            cursor.execute(sql) 
 
 # 用户登录与注册
 @app.route('/api/signIn', methods=["GET", "POST"])
@@ -441,7 +446,7 @@ def getShortage():
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
-        if row[6] == 0:
+        if row[6] == -1:
             continue
         sql = f"select Bname from book where Bno = '{row[1]}' and Bsubno = {row[2]};"
         cursor.execute(sql)
@@ -548,7 +553,7 @@ def purchase():
     sql = f"select max(Pno) from shortage;"
     cursor.execute(sql)
     Pno = cursor.fetchone()
-    if Pno[0] == None:
+    if Pno[0] == None or Pno[0] == -1:
         Pno = 1
     else:
         Pno = Pno[0] + 1
@@ -573,7 +578,7 @@ def finishPurchase():
             sql = f"update `book` set quantity = quantity + {row[2]} where Bno = '{row[0]}' and Bsubno = {row[1]};"
             print(sql)
             cursor.execute(sql)
-        sql = f"update shortage set Pno = 0 where Pno = {Pno};"
+        sql = f"update shortage set Pno = -1 where Pno = {Pno};"
         cursor.execute(sql)
     data = {"ret":0}
     closeSQL(conn, cursor)
@@ -696,7 +701,8 @@ def getVendors():
         for item in res:
             sql = f"select Bname from book where Bno = '{item[0]}' and Bsubno = {item[1]};"
             cursor.execute(sql)
-            Bname = cursor.fetchall()[0]
+            subres = cursor.fetchone()
+            Bname = subres[0]
             book = {"Bno":item[0], "Bsubno":item[1], "Bname":Bname, "state":item[2]}
             books.append(book)
         vendor = {"Vno":row[0], "Vname":row[1], "Vaddress":row[2], "books":books}
