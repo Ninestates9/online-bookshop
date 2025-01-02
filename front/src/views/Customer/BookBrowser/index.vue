@@ -4,7 +4,7 @@
       <div class="mt-4">
         <el-input v-model="searchInput" placeholder="请输入搜索内容" class="input-with-select" size="large">
           <template #prepend>
-            <el-select v-model="store.searchOP" placeholder="类型" style="width: 115px" size="large" >
+            <el-select v-model="store.searchOP" placeholder="类型" style="width: 115px" size="large">
               <el-option label="书号" value=" Bno" />
               <el-option label="书名" value="Bname" />
               <el-option label="出版社" value="press" />
@@ -23,20 +23,36 @@
     </div>
     <div class="bookbrowser">
       <vanta-birds />
+      <div v-if="isShow" class="slide" >
+        <el-carousel class="slide-content">
+          <el-carousel-item :key="1" class="slide-content-item">
+            <img :src="slide1" alt="slide1" class="slide-img" style="object-fit: fill;"/>
+          </el-carousel-item>
+          <el-carousel-item :key="2" class="slide-content-item">
+            <img :src="slide2" alt="slide2" class="slide-img" style="object-fit: cover;"/>
+          </el-carousel-item>
+          <el-carousel-item :key="3" class="slide-content-item">
+            <img :src="slide3" alt="slide3" class="slide-img" style="object-fit: cover;"/>
+          </el-carousel-item>
+          <el-carousel-item :key="4" class="slide-content-item">
+            <img :src="slide4" alt="slide4" class="slide-img" style="object-fit: cover;"/>
+          </el-carousel-item>
+        </el-carousel>
+      </div>
       <el-card @click="openPurchaseModal(book)" v-for="book in books" :key="book.Bno" class="book-card">
         <div class="book-mini-card">
-        <img :src="store.ip + '/cover/' + book.cover" alt="书本封面" class="book-cover" />
-        <div class="book-info">
-          <div class="book-info-left">
-            <div class="book-info-bookname">{{ book.Bname }}</div>
-            <div>{{ book.authors.join(' ') }}</div>
-            <div>{{ book.keys.join(' ') }}</div>
-            <div> {{ book.press }}</div>
+          <img :src="store.ip + '/cover/' + book.cover" alt="书本封面" class="book-cover" />
+          <div class="book-info">
+            <div class="book-info-left">
+              <div class="book-info-bookname">{{ book.Bname }}</div>
+              <div>{{ book.authors.join(' ') }}</div>
+              <div>{{ book.keys.join(' ') }}</div>
+              <div> {{ book.press }}</div>
+            </div>
+            <div class="book-info-right">
+              <strong class="price">¥{{ book.price }}</strong>
+            </div>
           </div>
-          <div class="book-info-right">
-            <strong class="price">¥{{ book.price }}</strong>
-          </div>
-        </div>
         </div>
       </el-card>
       <el-dialog v-model="isModalOpen" title="书籍详情">
@@ -59,7 +75,7 @@
         </el-descriptions>
         <template #footer>
           <strong class="price" style="margin-left: 15%;"> ¥{{ selectedBook?.price }}</strong>
-          <el-input-number v-model="orderQuantity" :min="1"  label="选择数量" style="margin-right: 20px;"/>
+          <el-input-number v-model="orderQuantity" :min="1" label="选择数量" style="margin-right: 20px;" />
           <el-button @click="isModalOpen = false">取消</el-button>
           <el-button type="primary" @click="addToCart">确认购买</el-button>
         </template>
@@ -75,12 +91,17 @@ import { ElCard, ElRow, ElCol, ElMessage } from 'element-plus';
 import axios from 'axios';
 import { Search } from '@element-plus/icons-vue'
 import VantaBirds from '../../VantaBirds.vue';
+import slide1 from "../../../assets/images/slide1.jpg"
+import slide2 from "../../../assets/images/slide2.jpg"
+import slide3 from "../../../assets/images/slide3.jpg"
+import slide4 from "../../../assets/images/slide4.jpg"
 // 初始化 Pinia store
 const store = mainStore();
 const searchInput = ref(''); // 搜索输入框绑定的值
 const isModalOpen = ref(false);
 const selectedBook = ref(null);
 const orderQuantity = ref(1);
+const isShow = ref(false);
 const searchOptions = [
   { value: 'Bno', label: '书号' },
   { value: 'Bname', label: '书名' },
@@ -162,6 +183,7 @@ const getBookBrowser = () => {
       if (responseData.ret === 1) {
         ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
       } else {
+        isShow.value = false;
         books.value = responseData.books;
       }
     }).catch(error => {
@@ -169,6 +191,10 @@ const getBookBrowser = () => {
       ElMessage.error('请求失败，请稍后重试');
     });
 }
+
+onMounted(() => {
+  isShow.value = true;
+});
 </script>
 
 <style scoped>
@@ -185,22 +211,19 @@ const getBookBrowser = () => {
   overflow: hidden;
   width: 100%;
   height: 100%;
-
 }
 
 .input-with-select {
-    max-width: 600px;
-    margin-top: 5%;
-    background-color: #ffffff7b;
+  max-width: 600px;
+  margin-top: 5%;
+  background-color: #ffffff7b;
 }
+
 :deep(.el-input) {
   padding-bottom: 10px;
   background-color: #59f9ff00;
 }
 
-.mt-4 {
-  background-color: #59f9ff28;
-}
 .search-input {
   width: 80%;
   padding: 10px;
@@ -274,10 +297,10 @@ const getBookBrowser = () => {
   object-fit: cover;
 }
 
-.book-mini-card{
+.book-mini-card {
   display: flex;
   flex-direction: column;
-  
+
 }
 
 .book-info {
@@ -309,10 +332,34 @@ const getBookBrowser = () => {
 
 }
 
+.slide {
+  width: 100%;
+  height: 80%;
+}
+
 .detail-book-cover {
   width: 50%;
   height: auto;
   margin-bottom: 10px;
+}
+
+.slide-content {
+  height: 100%;
+}
+
+:deep(.el-carousel__container) {
+  height: 100%;
+  position: relative;
+}
+
+.slide-content-item{
+  height: 100%;
+  width: 100%;
+}
+
+.slide-img {
+  width: 100%;
+  height: 100%;
 }
 
 </style>

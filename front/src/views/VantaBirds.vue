@@ -21,8 +21,8 @@ export default {
         minWidth: 200.0,
         scale: 1.0,
         backgroundColor: 0xffffff,
-        color1: 14381274,
-        color2: 16443110,
+        color1: 0x399fc0,
+        color2: 0x6fa1b3
       });
     });
 
