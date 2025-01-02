@@ -253,17 +253,19 @@ def getHistory():
 def searchBooks():
     books = []
     conn, cursor = connectSQL()
-    type = request.form.get("type")
+    type = request.form.get("type").strip()
     if type == 'null':
         return jsonify({"ret":1, "msg":"未选择类型！"})
-    content = request.form.get("content")
+    content = request.form.get("content").strip()
     if content[0] == '!' or content[0] == '！':
         if type == "Bno":
             sql = f"call searchBookBy{type}('{content}');"
         elif type[-1].isdigit():
             number = type[-1]
             type =  type[:-1]
+            content = content[1:]
             sql = f"call ssearchBookBy{type}('{content}', {number});"
+            print(sql)
         else:
             content = content[1:]
             sql = f"call ssearchBookBy{type}('{content}');"
