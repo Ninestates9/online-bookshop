@@ -41,7 +41,7 @@
               <span id="logout" style="color: red;">注销</span>
             </el-menu-item>
           </el-menu>
-          <el-footer>&copy; 2025 Online-bookshop. All rights reserved.</el-footer>
+          <el-footer style="margin-top: 15px;">&copy; 2025 Online-bookshop. All rights reserved.</el-footer>
         </el-aside>
   
         <el-main width="80%" height="100%" style="padding: 0;">
@@ -102,6 +102,7 @@ onMounted(() => {
     /* 修正为 100vw */
     height: 98.5vh;
     overflow: hidden;
+    background-color: rgba(135, 206, 250, 0.254);
 }
 
 .lefttop {
@@ -134,6 +135,18 @@ onMounted(() => {
 
 .username {
   margin-left: 10%;
+}
+
+:deep(.switchIcon){
+  color: red;
+}
+:deep(.el-aside) {
+  background-color: rgba(62, 178, 255, 0.229);
+}
+
+:deep(.el-menu) {
+  background-color: rgba(232, 251, 255, 0.229);
+
 }
 
 </style>

@@ -18,6 +18,9 @@
           <div class="order-details">
             <el-collapse class="board">
               <el-collapse-item title="书籍列表" name="1" class="booklist">
+                <template #title>
+        <div class="title">书籍列表</div>
+    </template>
                 <el-table :data="order.books" class="book-table">
                   <el-table-column prop="Bname" label="书名" />
                   <el-table-column prop="authors" label="作者" :formatter="formatAuthors" />
@@ -155,16 +158,51 @@ onMounted(() => {
   background-color: #33333300;
 }
 
+.title {
+    text-align: center; /* 居中显示文本 */
+    width: 100%; /* 确保宽度占满 */
+}
+
 .order-header {
   width: 90%;
 }
 
 ::v-deep .el-collapse-item__header:focus, .el-collapse-item__header:focus-visible {
     outline: none;
+    background-color: #42b5fd3b;
+}
+
+::v-deep .el-collapse {
+  background-color: #90d3fc3b;
 }
 
 ::v-deep .el-collapse-item__header {
     margin-left: 0;
+    background-color: #cbe9fd38;
+}
+
+:deep(.el-descriptions__label.el-descriptions__cell.is-bordered-label) {
+    background-color: #90d3fc3b;
+}
+
+:deep(.el-collapse-item__wrap) {
+  background-color: #cbe9fd38;
+}
+
+:deep(.el-collapse-item__content) {
+  background-color: #a4dafd67;
+}
+
+::v-deep .el-descriptions__body {
+    background-color: #cbe9fd38;
+}
+
+:deep(.el-table__body) {
+  --el-table-tr-bg-color: #a4dafd67;
+}
+
+:deep(.el-table__header) {
+  --el-table-header-bg-color: #64c3ff58;
 }
 
 </style>

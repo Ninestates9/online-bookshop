@@ -85,7 +85,8 @@ const sendMessage = () => {
 
 button {
     margin-left: 10px;
-    background-color: aqua;
+    background-color: rgb(76, 213, 255);
+    color:aliceblue;
 }
 
 .vexlie2 {

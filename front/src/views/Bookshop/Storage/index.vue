@@ -53,7 +53,7 @@
 
         <!-- 添加书目按钮 -->
         <div class="add-button-container">
-            <el-button size="large" type="primary" @click="showDialog">添加书目</el-button>
+            <button size="large" type="primary" @click="showDialog">添加书目</button>
         </div>
 
         <el-dialog title="添加新书籍" :model-value="dialogVisible" @close="dialogVisible = false">
@@ -372,6 +372,7 @@ onMounted(() => {
     box-sizing: border-box;
     /* 包含边距和填充在宽高内 */
     cursor: pointer;
+    background-color: #ffffff7b;
 }
 
 .book-cover {
@@ -391,7 +392,11 @@ onMounted(() => {
     justify-content:center;
     font-size: large;
 }
-
+button {
+    margin-left: 10px;
+    background-color: rgb(76, 213, 255);
+    color:aliceblue;
+}
 .price-control input {
     width: 80px;
     margin-left: 5%;

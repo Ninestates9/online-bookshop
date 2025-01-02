@@ -2,7 +2,7 @@
     <div class="rightmain">
         <VantaBirds />
         <div class="righttop">
-            <h3 class="topinfo">用户信息</h3>
+            <h3 class="topinfo" style="font-size: 30px;">用户信息</h3>
         </div>
         <div>
             <el-descriptions :border="true" column="1" class="userTable" size="large">
@@ -225,7 +225,8 @@ onBeforeUnmount(() => {
 
 button {
     margin-left: 10px;
-    background-color: aqua;
+    background-color: rgb(76, 213, 255);
+    color:aliceblue;
 }
 
 .modal-buttons {
@@ -280,8 +281,11 @@ button {
     width: 320px;
     height: 320px;
 }
+:deep(.el-descriptions__label.el-descriptions__cell.is-bordered-label) {
+    background-color: #90d3fc7d;
+}
 
 ::v-deep .el-descriptions__body {
-    background-color: #ffffff82;
+    background-color: #a4dafd67;
 }
 </style>

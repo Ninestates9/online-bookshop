@@ -216,10 +216,10 @@ onMounted(() => {
 
 .order-item {
   padding: 15px;
-  border: 1px solid #ddd;
+  border: 5px solid rgb(233, 247, 255);
   border-radius: 5px;
   color: black;
-  background-color: #f9f9f9;
+  background-color: #f9f9f900;
 }
 
 .books-list {
@@ -250,6 +250,44 @@ p strong {
 .order-actions {
   margin-top: 20px;
   margin-bottom: 10px;
+}
+
+::v-deep .el-collapse-item__header:focus, .el-collapse-item__header:focus-visible {
+    outline: none;
+    background-color: #42b5fd3b;
+}
+
+::v-deep .el-collapse {
+  background-color: #90d3fc3b;
+}
+
+::v-deep .el-collapse-item__header {
+    margin-left: 0;
+    background-color: #cbe9fd38;
+}
+
+:deep(.el-descriptions__label.el-descriptions__cell.is-bordered-label) {
+    background-color: #90d3fc3b;
+}
+
+:deep(.el-collapse-item__wrap) {
+  background-color: #cbe9fd38;
+}
+
+:deep(.el-collapse-item__content) {
+  background-color: #a4dafd67;
+}
+
+::v-deep .el-descriptions__body {
+    background-color: #cbe9fd38;
+}
+
+:deep(.el-table__body) {
+  --el-table-tr-bg-color: #a4dafd67;
+}
+
+:deep(.el-table__header) {
+  --el-table-header-bg-color: #64c3ff58;
 }
 
 </style>

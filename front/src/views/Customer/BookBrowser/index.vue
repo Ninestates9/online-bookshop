@@ -53,13 +53,13 @@
           <el-descriptions-item label="出版社">{{ selectedBook?.press }}</el-descriptions-item>
           <el-descriptions-item label="库存">{{ selectedBook?.quantity }}</el-descriptions-item>
           <el-descriptions-item label="位置"> {{ selectedBook?.position }}</el-descriptions-item>
-          <el-descriptions-item label="目录">{{ selectedBook?.catalog }}</el-descriptions-item>
+          <el-descriptions-item label="简介">{{ selectedBook?.catalog }}</el-descriptions-item>
 
 
         </el-descriptions>
         <template #footer>
           <strong class="price" style="margin-left: 15%;"> ¥{{ selectedBook?.price }}</strong>
-          <el-input-number v-model="orderQuantity" :min="1"  label="选择数量" />
+          <el-input-number v-model="orderQuantity" :min="1"  label="选择数量" style="margin-right: 20px;"/>
           <el-button @click="isModalOpen = false">取消</el-button>
           <el-button type="primary" @click="addToCart">确认购买</el-button>
         </template>
@@ -193,7 +193,10 @@ const getBookBrowser = () => {
     margin-top: 5%;
     background-color: #ffffff7b;
 }
-
+:deep(.el-input) {
+  padding-bottom: 10px;
+  background-color: #59f9ff00;
+}
 
 .mt-4 {
   background-color: #59f9ff28;

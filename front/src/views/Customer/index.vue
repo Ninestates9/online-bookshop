@@ -32,7 +32,7 @@
             <span id="logout" style="color: red;">注销</span>
           </el-menu-item>
         </el-menu>
-        <el-footer>&copy; 2025 Online-bookshop. All rights reserved.</el-footer>
+        <el-footer style="margin-top: 15px;">&copy; 2025 Online-bookshop. All rights reserved.</el-footer>
       </el-aside>
 
       <el-main width="80%" height="100%" style="padding: 0;">
@@ -183,7 +183,7 @@ import {
 }
 
 :deep(.el-aside) {
-  background-color: rgba(197, 239, 247, 0.229);
+  background-color: rgba(62, 178, 255, 0.229);
 }
 
 :deep(.el-menu) {
@@ -191,9 +191,7 @@ import {
 
 }
 
-:deep(.el-input__inner) {
-  margin-bottom: 5px;
-}
+
 
 :deep(.switchIcon){
   color: red;

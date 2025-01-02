@@ -25,7 +25,7 @@
           <span>单价: ¥{{ book.price }}</span>
           <el-input-number v-model.number="book.orderNumber" :min="1" size="large"/>
           <span>总价: ¥{{ book.price * book.orderNumber }}</span>         
-          <button class='deleteBtn' @click="removeItem(index)">删除</button>
+          <button @click="removeItem(index)">删除</button>
         </div>
       </div>
     </el-scrollbar>
@@ -221,6 +221,14 @@ const getCartBook = () => {
   margin-top: 5%;
 }
 
+
+
+button {
+    margin-left: 10px;
+    background-color: rgb(76, 213, 255);
+    color:aliceblue;
+}
+
 .rightmain-cart .bottom{
   width: 60%;
   margin-bottom: 5%;
@@ -265,8 +273,11 @@ const getCartBook = () => {
   align-items: center;
 }
 
-.purchase {
-  background-color: aqua;
+.buttom {
+  display: flex;
+  flex-grow: 1;
+  background-color: deepskyblue;
+  width: 100%;
 }
 
 .total {
