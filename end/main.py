@@ -103,20 +103,23 @@ def processBookOrder(p_cursor, p_Ono, p_level, p_Uno):
             insufficientNumber = orderNumber - quantity 
             f_registerShortage(p_cursor, Bno, Bsubno, p_Uno, insufficientNumber)
     rate = [0.1, 0.15, 0.15, 0.2, 0.25]
-    discountMoney = totalMoney * (1 - rate[p_level + 1])
+    discountMoney = totalMoney * (1 - rate[p_level - 1])
     return totalMoney, discountMoney
 
 def f_registerShortage(cursor, Bno, Bsubno, Uno, insufficientNumber):
-    sql = f"select Sno from shortage where Bno = '{Bno}' and Bsubno = {Bsubno};"
+    sql = f"select Sno, Pno from shortage where Bno = '{Bno}' and Bsubno = {Bsubno};"
     cursor.execute(sql)
-    result = cursor.fetchone()
-    if result == None:
+    result_out = cursor.fetchall()
+    if result_out == None:
         sql = f"insert into shortage(Bno, Bsubno, Uno, insufficientNumber, purchaseTime) values('{Bno}', {Bsubno}, '{Uno}', {insufficientNumber}, now());"
         cursor.execute(sql)
-    else:
-        Sno = result[0]
-        sql = f"update shortage set insufficientNumber = insufficientNumber + {insufficientNumber}, Uno = '{Uno}' where Sno = {Sno};"
-        cursor.execute(sql)
+    for result in result_out:
+        if result[1] == 0:
+            continue    
+        else:
+            Sno = result[0]
+            sql = f"update shortage set insufficientNumber = insufficientNumber + {insufficientNumber}, Uno = '{Uno}' where Sno = {Sno};"
+            cursor.execute(sql)
 
 # 用户登录与注册
 @app.route('/api/signIn', methods=["GET", "POST"])
@@ -253,17 +256,19 @@ def getHistory():
 def searchBooks():
     books = []
     conn, cursor = connectSQL()
-    type = request.form.get("type")
+    type = request.form.get("type").strip()
     if type == 'null':
         return jsonify({"ret":1, "msg":"未选择类型！"})
-    content = request.form.get("content")
+    content = request.form.get("content").strip()
     if content[0] == '!' or content[0] == '！':
         if type == "Bno":
             sql = f"call searchBookBy{type}('{content}');"
         elif type[-1].isdigit():
             number = type[-1]
             type =  type[:-1]
+            content = content[1:]
             sql = f"call ssearchBookBy{type}('{content}', {number});"
+            print(sql)
         else:
             content = content[1:]
             sql = f"call ssearchBookBy{type}('{content}');"
@@ -432,10 +437,12 @@ def getBooks():
 def getShortage():
     shortageSet = []
     conn, cursor = connectSQL()
-    sql = f"select Sno, Bno, Bsubno, Uno, insufficientNumber, purchaseTime from shortage;"
+    sql = f"select Sno, Bno, Bsubno, Uno, insufficientNumber, purchaseTime, Pno from shortage;"
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
+        if row[6] == 0:
+            continue
         sql = f"select Bname from book where Bno = '{row[1]}' and Bsubno = {row[2]};"
         cursor.execute(sql)
         res = cursor.fetchone()[0]
@@ -563,7 +570,9 @@ def finishPurchase():
         data = {"ret":1, "msg":"该采购单不存在！"}
     else:
         for row in result:
-            sql = f"updata book set quantity = quantity + {row[2]} where Bno = '{row[0]}' and Bsubno = {row[1]}"
+            sql = f"update `book` set quantity = quantity + {row[2]} where Bno = '{row[0]}' and Bsubno = {row[1]};"
+            print(sql)
+            cursor.execute(sql)
         sql = f"update shortage set Pno = 0 where Pno = {Pno};"
         cursor.execute(sql)
     data = {"ret":0}
@@ -610,7 +619,7 @@ def addBooks():
     catalog = request.form.get("catalog")
     position = request.form.get("position")
     cover_data = request.files["cover"]
-    sql = f"select Bno from book where Bno = '{Bno}' and Bsubno = {Bsubno};"
+    sql = f"select Bno from book where Bno = '{Bno}' and Bsubno = {Bsubno} and isValid = 1;"
     cursor.execute(sql)
     result = cursor.fetchone()
     if result != None:
