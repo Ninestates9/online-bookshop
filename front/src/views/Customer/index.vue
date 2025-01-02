@@ -1,7 +1,7 @@
 <template>
   <div class="CustomerMain">
     <el-container>
-      <el-aside width="20%" style="background-color: white;">
+      <el-aside width="20%" >
         <div class="lefttop">
           <el-avatar class="av" shape="square" :size="90" :src="misakaImg" alt="Misaka Mikoto" fit="cover" />
           <h2 class="username">{{ store.username }}</h2>
@@ -28,7 +28,7 @@
             <span id="Message" >留言</span>
           </el-menu-item>
           <el-menu-item index="6" @click="logout()">
-            <el-icon><SwitchButton /></el-icon>
+            <el-icon class="switchIcon"><SwitchButton /></el-icon>
             <span id="logout" style="color: red;">注销</span>
           </el-menu-item>
         </el-menu>
@@ -168,7 +168,7 @@ import {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  background-color: rgba(255, 255, 255, 0);
+  background-color: rgba(135, 206, 250, 0.254);
 }
 
 .lefttop {
@@ -182,6 +182,17 @@ import {
   margin-left: 10%;
 }
 
+:deep(.el-aside) {
+  background-color: rgba(197, 239, 247, 0.229);
+}
+
+:deep(.el-menu) {
+  background-color: rgba(232, 251, 255, 0.229);
+
+}
+:deep(.switchIcon){
+  color: red;
+}
 .rightmain {
   position: relative;
   display: flex;

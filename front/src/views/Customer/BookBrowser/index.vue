@@ -185,7 +185,7 @@ const getBookBrowser = () => {
   overflow: hidden;
   width: 100%;
   height: 100%;
-  background-color: #cccccc00;
+
 }
 
 .input-with-select {
@@ -196,7 +196,7 @@ const getBookBrowser = () => {
 
 
 .mt-4 {
-  background-color: #ffffff7b;
+  background-color: #59f9ff28;
 }
 .search-input {
   width: 80%;
