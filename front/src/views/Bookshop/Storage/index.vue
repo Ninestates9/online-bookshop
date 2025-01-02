@@ -409,12 +409,14 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    flex-wrap: nowrap;
 }
 
 .m-book-right {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
+    flex-wrap: nowrap;
 }
 
 .m-book-details {

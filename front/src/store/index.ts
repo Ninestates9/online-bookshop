@@ -11,7 +11,7 @@ export const mainStore = defineStore('main', {
     balance:100000,
     usermessage:'嘻嘻',
     searchOP:null,
-    ip:'http://10.19.131.1:5000',
+    ip:'http://10.10.112.34:5000',
     userlevel:5,
     total:0,
     cartItems: ref([]),

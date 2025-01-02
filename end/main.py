@@ -257,7 +257,7 @@ def searchBooks():
     if type == 'null':
         return jsonify({"ret":1, "msg":"未选择类型！"})
     content = request.form.get("content")
-    if content[0] == '!':
+    if content[0] == '!' or content[0] == '！':
         if type == "Bno":
             sql = f"call searchBookBy{type}('{content}');"
         elif type[-1].isdigit():
@@ -600,8 +600,10 @@ def addBooks():
     Bno = request.form.get("Bno")
     Bsubno = request.form.get("Bsubno")
     Bname = request.form.get("Bname")
-    authors = request.form.getlist("authors")
-    keys = request.form.getlist("keys")
+    authors = request.form.get("authors")
+    authors = authors.strip().split(" ")
+    keys = request.form.get("keys")
+    keys = keys.strip().split(" ")
     press = request.form.get("press")
     price = request.form.get("price")
     quantity = request.form.get("quantity")
@@ -617,7 +619,7 @@ def addBooks():
     cover = Image.open(cover_data.stream)
     coverPath = f"../source/cover/{coverName}"
     cover.save(coverPath)
-    sql = f"insert into book values('{Bno}', {Bsubno}, '{Bname}', '{press}', {price}, {quantity}, '{coverName}', '{catalog}', {position});"
+    sql = f"insert into book values('{Bno}', {Bsubno}, '{Bname}', '{press}', {price}, {quantity}, '{coverName}', '{catalog}', {position}, 1);"
     cursor.execute(sql)
     for keyword in keys:
         sql = f"select Kno from `keywords` where keyword = '{keyword}';"
@@ -701,12 +703,14 @@ def addVendor():
     Vaddress = request.form.get("Vaddress")
     books = request.form.get("books")
     books = json.loads(books)
+    print(books)
     sql = f"insert into vendor(Vname, Vaddress) values('{Vname}', '{Vaddress}');"
     cursor.execute(sql)
     sql = f"select Vno from vendor where Vname = '{Vname}' and Vaddress =  '{Vaddress}';"
     cursor.execute(sql)
     Vno = cursor.fetchone()[0]
     for book in books:
+        book["Bno"] = book["Bno"].strip()
         sql = f'''insert into supply values('{book["Bno"]}', {book["Bsubno"]}, {Vno}, '{book["state"]}');'''
         cursor.execute(sql)
     data = {"ret":0}

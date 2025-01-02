@@ -251,7 +251,7 @@ const getBookBrowser = () => {
   /* 垂直排列内容 */
   justify-content: space-between;
   /* 内容均匀分布 */
-  height: 450px;
+  height: 500px;
   /* 固定高度 */
   margin: 10px;
   /* 卡片之间的间距 */
