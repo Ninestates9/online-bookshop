@@ -125,8 +125,9 @@ onMounted(() => {
 }
 
 button {
-  align-items: center;
-  background-color: aqua;
+    margin-left: 10px;
+    background-color: rgb(76, 213, 255);
+    color:aliceblue;
 }
 
 .delete-btn {

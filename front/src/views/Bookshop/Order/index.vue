@@ -20,6 +20,9 @@
               <div class="demo-collapse">
                 <el-collapse v-model="activeNames" @change="handleChange">
                   <el-collapse-item title="书籍列表" name="1">
+                    <template #title>
+        <div class="title">书籍列表</div>
+    </template>
                     <el-table :data="order.books" border>
                       <el-table-column prop="Bname" label="书名" />
                       <el-table-column prop="authors" label="作者" :formatter="formatAuthors" />
@@ -226,6 +229,10 @@ onMounted(() => {
   margin-left: 20px;
 }
 
+.title {
+    text-align: center; /* 居中显示文本 */
+    width: 100%; /* 确保宽度占满 */
+}
 .book-item {
   margin-bottom: 10px;
 }

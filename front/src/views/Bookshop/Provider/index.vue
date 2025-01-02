@@ -15,6 +15,9 @@
                 <div class="demo-collapse">
                     <el-collapse v-model="vendor.activeNames" @change="handleChange"  >
                         <el-collapse-item title="供应的书籍" name="1">
+                            <template #title>
+        <div class="title">供应的书籍</div>
+    </template>
                             <el-table :data="vendor.books" border>
                                 <el-table-column prop="Bname" label="书名" />
                                 <el-table-column prop="Bno" label="书号" />
@@ -181,9 +184,15 @@ onMounted(() => {
     height: 60%;
 }
 
+.title {
+    text-align: center; /* 居中显示文本 */
+    width: 100%; /* 确保宽度占满 */
+}
+
 button {
     margin-left: 10px;
-    background-color: aqua;
+    background-color: rgb(76, 213, 255);
+    color:aliceblue;
 }
 
 .m-vendor-button {
