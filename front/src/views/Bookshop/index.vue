@@ -37,7 +37,7 @@
               <span id="MissingRecord">供应商</span>
             </el-menu-item>
             <el-menu-item index="8" @click="logout()">
-              <el-icon><SwitchButton /></el-icon>
+              <el-icon class="switchIcon"><SwitchButton /></el-icon>
               <span id="logout" style="color: red;">注销</span>
             </el-menu-item>
           </el-menu>

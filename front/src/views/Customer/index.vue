@@ -131,7 +131,7 @@ const getCartBook = () => {
     .then(response => {
       let responseData = response.data;
       if (responseData.ret === 1) {
-        ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
+        // ElMessage({ message: responseData.msg, type: 'error', duration: 5 * 1000, grouping: true });
       } else {
         // 确保数据结构正确
         store.cartItems.value = responseData.books.map(book => ({

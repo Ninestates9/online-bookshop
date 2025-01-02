@@ -171,4 +171,46 @@ button {
 button:hover {
   background-color: #45a049;
 }
+
+::v-deep .el-collapse-item__header:focus, .el-collapse-item__header:focus-visible {
+    outline: none;
+    background-color: #42b5fd3b;
+}
+
+::v-deep .el-collapse {
+  background-color: #90d3fc3b;
+}
+
+::v-deep .el-collapse-item__header {
+    margin-left: 0;
+    background-color: #cbe9fd38;
+}
+
+:deep(.el-descriptions__label.el-descriptions__cell.is-bordered-label) {
+    background-color: #90d3fc3b;
+}
+
+:deep(.el-collapse-item__wrap) {
+  background-color: #cbe9fd38;
+}
+
+:deep(.el-collapse-item__content) {
+  background-color: #a4dafd67;
+}
+
+::v-deep .el-descriptions__body {
+    background-color: #cbe9fd38;
+}
+
+:deep(.el-table__body) {
+  --el-table-tr-bg-color: #a4dafd67;
+}
+
+:deep(.el-table__header) {
+  --el-table-header-bg-color: #64c3ff58;
+}
+
+:deep(.el-table__empty-block) {
+  background-color: #a4dafd67;
+}
 </style>

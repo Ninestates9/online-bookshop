@@ -357,4 +357,8 @@ p strong {
 :deep(.el-table__header) {
   --el-table-header-bg-color: #64c3ff58;
 }
+
+:deep(.el-table__empty-block) {
+  background-color: #a4dafd67;
+}
 </style>

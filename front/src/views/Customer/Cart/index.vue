@@ -106,6 +106,10 @@ const getDiscount = (totalPrice) => {
 };
 
 const submitCart = () => {
+  if ( store.cartItems.length === 0 ){
+    ElMessage.warning('购物车为空!');
+  }
+  else{
   // alert(totalPrice.value);
   const discountPrice = getDiscount(totalPrice.value); // 获取折扣后的金额
   // alert(discountPrice);
@@ -166,7 +170,7 @@ const submitCart = () => {
   } else {
     ElMessage({ message: '账户余额不足', type: 'error' });
   }
-
+}
 };
 
 const getCartBook = () => {
