@@ -3,21 +3,21 @@
         <div class="m-vendor-righttop">
             <h3 class="topinfo">供应商</h3>
         </div>
-        <el-scroller class="Provider">
-            <div v-for="(vendor, index) in provider" :key="vendor.Vno"  class="vendor-item">
+        <el-scrollbar class="Provider">
+            <div v-for="(vendor, index) in provider" :key="vendor.Vno" class="vendor-item">
                 <!-- Vendor Information -->
                 <el-descriptions :border="true" column="2" class="order-header" size="large">
                     <el-descriptions-item label="供应商名称">{{ vendor.Vname }}</el-descriptions-item>
                     <el-descriptions-item label="供应商地址">{{ vendor.Vaddress }}</el-descriptions-item>
                 </el-descriptions>
-                
+
                 <!-- Collapse Section for Books -->
                 <div class="demo-collapse">
-                    <el-collapse v-model="vendor.activeNames" @change="handleChange"  >
+                    <el-collapse v-model="vendor.activeNames" @change="handleChange">
                         <el-collapse-item title="供应的书籍" name="1">
                             <template #title>
-        <div class="title">供应的书籍</div>
-    </template>
+                                <div class="title">供应的书籍</div>
+                            </template>
                             <el-table :data="vendor.books" border>
                                 <el-table-column prop="Bname" label="书名" />
                                 <el-table-column prop="Bno" label="书号" />
@@ -28,10 +28,10 @@
                     </el-collapse>
                 </div>
             </div>
-        </el-scroller>
+        </el-scrollbar>
         <div class="m-vendor-button">
-        <button @click="dialogVisible = true" size="large">添加供应商</button>
-    </div>
+            <button @click="dialogVisible = true" size="large">添加供应商</button>
+        </div>
 
         <!-- Dialog to add a new vendor -->
         <el-dialog :model-value="dialogVisible" title="添加供应商" @close="dialogVisible = false">
@@ -43,9 +43,9 @@
                     <el-input v-model="newVendor.Vaddress" />
                 </el-form-item>
                 <el-form-item label="书籍">
-                    <el-input v-model="newBook.Bno" placeholder="书号"/>
-                    <el-input type="number" v-model="newBook.Bsubno" placeholder="丛书号" style="margin-top: 20px;"/>
-                    <el-input v-model="newBook.state" placeholder="状态" style="margin-top: 20px;"/>
+                    <el-input v-model="newBook.Bno" placeholder="书号" />
+                    <el-input type="number" v-model="newBook.Bsubno" placeholder="丛书号" style="margin-top: 20px;" />
+                    <el-input v-model="newBook.state" placeholder="状态" style="margin-top: 20px;" />
                     <el-button @click="addBook" style="margin-top: 20px;">添加书籍</el-button>
                     <ul>
                         <li v-for="(book, index) in newVendor.books" :key="index">
@@ -149,7 +149,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-
 :deep(.el-collapse-item__header:focus, .el-collapse-item__header:focus-visible) {
     outline: none;
 }
@@ -185,14 +184,16 @@ onMounted(() => {
 }
 
 .title {
-    text-align: center; /* 居中显示文本 */
-    width: 100%; /* 确保宽度占满 */
+    text-align: center;
+    /* 居中显示文本 */
+    width: 100%;
+    /* 确保宽度占满 */
 }
 
 button {
     margin-left: 10px;
     background-color: rgb(76, 213, 255);
-    color:aliceblue;
+    color: aliceblue;
 }
 
 .m-vendor-button {
@@ -234,13 +235,14 @@ button {
 }
 
 
-::v-deep .el-collapse-item__header:focus, .el-collapse-item__header:focus-visible {
+::v-deep .el-collapse-item__header:focus,
+.el-collapse-item__header:focus-visible {
     outline: none;
     background-color: #42b5fd3b;
 }
 
 ::v-deep .el-collapse {
-  background-color: #90d3fc3b;
+    background-color: #90d3fc3b;
 }
 
 ::v-deep .el-collapse-item__header {
@@ -253,11 +255,11 @@ button {
 }
 
 :deep(.el-collapse-item__wrap) {
-  background-color: #cbe9fd38;
+    background-color: #cbe9fd38;
 }
 
 :deep(.el-collapse-item__content) {
-  background-color: #a4dafd67;
+    background-color: #a4dafd67;
 }
 
 ::v-deep .el-descriptions__body {
@@ -265,14 +267,14 @@ button {
 }
 
 :deep(.el-table__body) {
-  --el-table-tr-bg-color: #a4dafd67;
+    --el-table-tr-bg-color: #a4dafd67;
 }
 
 :deep(.el-table__header) {
-  --el-table-header-bg-color: #64c3ff58;
+    --el-table-header-bg-color: #64c3ff58;
 }
 
 :deep(.el-table__empty-block) {
-  background-color: #a4dafd67;
+    background-color: #a4dafd67;
 }
 </style>

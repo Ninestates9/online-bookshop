@@ -471,7 +471,7 @@ def getPurchase():
     cursor.execute(sql)
     result = cursor.fetchall()
     for row in result:
-        if row[0] == 0:
+        if row[0] == -1:
             continue
         sql = f"select Sno from shortage where Pno = {row[0]};"
         cursor.execute(sql)
