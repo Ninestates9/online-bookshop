@@ -34,7 +34,7 @@
                     <el-descriptions-item label="出版社">{{ selectedBook?.press }}</el-descriptions-item>
                     <el-descriptions-item label="库存">{{ selectedBook?.quantity }}</el-descriptions-item>
                     <el-descriptions-item label="位置"> {{ selectedBook?.position }}</el-descriptions-item>
-                    <el-descriptions-item label="目录">{{ selectedBook?.catalog }}</el-descriptions-item>
+                    <el-descriptions-item label="简介">{{ selectedBook?.catalog }}</el-descriptions-item>
 
 
                 </el-descriptions>
@@ -97,7 +97,7 @@
                     </el-form-item>
 
                     <el-form-item label="简介">
-                        <el-input v-model="newBook.catalog" placeholder="目录"></el-input>
+                        <el-input v-model="newBook.catalog" placeholder="简介"></el-input>
                     </el-form-item>
 
                     <el-form-item label="位置">
