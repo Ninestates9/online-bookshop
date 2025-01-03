@@ -96,7 +96,7 @@
                         <el-input v-model.number="newBook.quantity" type="number" placeholder="库存量"></el-input>
                     </el-form-item>
 
-                    <el-form-item label="目录">
+                    <el-form-item label="简介">
                         <el-input v-model="newBook.catalog" placeholder="目录"></el-input>
                     </el-form-item>
 
